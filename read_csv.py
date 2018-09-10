@@ -6,6 +6,9 @@ CSV_PATH = "/home/cobalt/datasets/fma/fma_metadata/tracks.csv"
 PICKLE_PATH = "./all_metadata.p"
 
 def read_dict(path):
+    """
+    reads the complete metadata dict for all files from a .csv-file
+    """
     read = reader(open(path), delimiter=',')
     head = list(zip(tuple(next(read)), tuple(next(read))))
     next(read) #empty line
@@ -18,6 +21,10 @@ def read_dict(path):
     return res
 
 def make_dict(header, data):
+    """
+    converts metadata for a single file to a dict
+    called by read_dict
+    """
     d = {}
     for i, sub in enumerate(header):
         if sub == ('',''): 

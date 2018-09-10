@@ -1,6 +1,7 @@
 import os
 import pydub
 import scipy
+from scipy import signal
 from scipy.io import wavfile
 import numpy as np
 import tempfile
@@ -17,12 +18,26 @@ f.close()
 
 part = data[:rate*30, LEFT]
 fft = np.fft.fft(part)
+#stft = signal.stft(part)
 
-print(fft.shape)
+#print(stft.shape)
 
 # print(rate)
 # print(data.shape)
 # print(data)
 
-plt.plot(fft)
+f, t, Zxx = signal.stft(part, rate, nperseg=2**13)
+
+hist, bin_edges = np.histogram(Zxx, bins=1000)
+
+print(Zxx.shape)
+exit()
+
+plt.bar(range(len(hist)), hist)
+plt.xticks(range(len(hist)), bin_edges)
+
+#plt.pcolormesh(t, f, np.abs(Zxx), vmin=0, vmax=20)
+
+
+#plt.plot(fft)
 plt.show()
