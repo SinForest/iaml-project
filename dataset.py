@@ -1,3 +1,5 @@
+#!/bin/env python3
+# requires python3.6 or higher (Hooray for f-Strings! \o/)
 import torch
 from torch.utils.data import Dataset, DataLoader
 from read_csv import read_dict
@@ -10,7 +12,7 @@ import librosa
 
 class SoundfileDataset(Dataset):
 
-    def __init__(self, path, ipath, output='raw', seg_size=30, hotvec=False, cut_data=False, verbose=True):
+    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True):
         _, ext = os.path.splitext(path)
         if ext == ".p":
             d = pickle.load(open(path, 'rb'))
@@ -86,7 +88,7 @@ class SoundfileDataset(Dataset):
 
 if __name__ == "__main__":
 
-    IPATH = "./dataset.ln"
+    IPATH = "./dataset.ln"  # => README.MD
 
     dset = SoundfileDataset("./all_metadata.p", IPATH, seg_size=30, cut_data=True)
     
