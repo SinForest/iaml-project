@@ -2,7 +2,7 @@ from csv import reader
 import pickle
 from tqdm import tqdm
 
-CSV_PATH = "/home/cobalt/datasets/fma/fma_metadata/tracks.csv"
+CSV_PATH = "./metadata.ln/tracks.csv"
 PICKLE_PATH = "./all_metadata.p"
 
 def read_dict(path):
