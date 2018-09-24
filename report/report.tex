@@ -1,0 +1,47 @@
+\documentclass[]{scrreprt}
+\usepackage[utf8]{inputenc} 
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{cite} 
+\usepackage{caption}
+
+\usepackage{glossaries} 
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,        % false: boxed links; true: colored links
+	linkcolor=black,        % color of internal links
+	%    citecolor=green,        % color of links to bibliography
+	citecolor=black,        % color of links to bibliography
+	filecolor=magenta,      % color of file links
+	urlcolor=blue           % color of external links
+}
+
+
+% Title Page
+\title{This is a very cool project, you know?}
+\author{Patrick Dammann (\#\#\#\#\#\#\#) \and Florian Fallenbüchel (\#\#\#\#\#\#\#) \and Thorsten Wünsche (3148266)}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\tableofcontents
+
+\input{content/introduction}
+\input{content/tex-demo}
+\input{content/conclusion}
+%% Bibliography
+% natbib style, requires the usage of natbib: \bibliographystyle{plainnat}
+\bibliographystyle{is-alpha}
+\bibliography{literature}%Bibliography file name
+
+\listoffigures
+
+\listoftables
+
+\end{document}          
