@@ -12,7 +12,7 @@ import librosa
 
 class SoundfileDataset(Dataset):
 
-    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True):
+    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True, out_type='raw'):
         _, ext = os.path.splitext(path)
         if ext == ".p":
             d = pickle.load(open(path, 'rb'))
@@ -52,13 +52,18 @@ class SoundfileDataset(Dataset):
         self.ipath = ipath       # path of image data
         self.hotvec = hotvec     # whether to return labels as one-hot-vec
         self.cut_data = cut_data # whether data is only 30s per song
-
-    def __getitem__(self, idx):
-        #TODO: benchmark by iterating over pass'ing Dataloader
-
+        self.out_type = out_type # 'raw' or 'mel'
+    
+    def calc_mel(self, song, sr):
         n_fft = 2**11         # shortest human-disting. sound (music)
         hop_length = 2**10    # => 50% overlap of frames
         n_mels = 128
+
+        return librosa.feature.melspectrogram(song, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
+
+
+    def __getitem__(self, idx):
+        #TODO: benchmark by iterating over pass'ing Dataloader
 
         this = self.data[idx]
 
@@ -66,11 +71,14 @@ class SoundfileDataset(Dataset):
         song, sr = librosa.load(os.path.join(self.ipath, this.path), mono=True, offset=offs, duration=self.seg_size)
         # (change resampling method, if to slow)
 
-        X = librosa.feature.melspectrogram(song, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
+        if self.out_type == 'raw':
+            X = song
+        elif self.out_type == 'mel':
+            X = self.calc_mel(song, sr)
+        else:
+            raise ValueError(f"wrong out_type '{self.out_type}'")
         # do we really need to log(S) this? skip this for first attempts
         del song, sr
-
-        #TODO: (maybe create more fetures?)
 
         # create hot-vector (if needed)
         if self.hotvec:
@@ -81,7 +89,6 @@ class SoundfileDataset(Dataset):
 
         return X, y
         
-    
     def __len__(self):
         return len(self.data)
     
