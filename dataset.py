@@ -102,6 +102,6 @@ if __name__ == "__main__":
 
     print("### Benchmarking dataloading speed ###")
     #TODO: compare to training with offline-preprocessed data, to see if preprocessing is bottleneck
-    dataloader = DataLoader(dset, num_workers=4, batch_size=4)
+    dataloader = DataLoader(dset, num_workers=32, batch_size=64)
     for X, y in tqdm(dataloader):
         pass
