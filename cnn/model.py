@@ -3,7 +3,7 @@ import torch.nn as nn
 import numpy as np
 
 class Model(nn.Module):
-    def __init__(self, n_mels, n_samp, n_lbls):
+    def __init__(self, n_mels, n_samp, n_lbls, verbose=False):
         super().__init__()
 
         n_filter = 256
@@ -19,7 +19,13 @@ class Model(nn.Module):
         self.conv = nn.Sequential(*parts)
         self.lstm = nn.LSTM(n_filter, n_hidden)
         self.fc   = nn.Sequential(nn.Linear(n_hidden, n_linear), nn.Dropout(0.5), nn.Linear(n_linear, n_lbls))
-        
+        if verbose:
+            print(f"Created model for input {n_mels}x{n_samp} and {n_lbls} classes.\n"
+                  f"parameter count: {self.param_count():,}")
+
+    def param_count(self):
+        return sum([sum([y.numel() for y in x.parameters()]) for x in self.modules() if type(x) not in {nn.Sequential, Model}])
+    
     def use_lstm(self, x):
         return self.lstm(x.permute(2, 0, 1))[0] # => format: (nt, bs, nf)
     
@@ -43,7 +49,7 @@ class Model(nn.Module):
 
 
 def main():
-    model = Model(128, 646, 10)
+    model = Model(128, 646, 10, verbose=True)
     print(f"parameter count: {sum([sum([y.numel() for y in x.parameters()]) for x in model.modules() if type(x) not in {nn.Sequential, Model}]):,}")
     inp = torch.ones(64, 128, 646)
     print(model(inp).size())

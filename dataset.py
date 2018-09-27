@@ -12,7 +12,7 @@ import librosa
 
 class SoundfileDataset(Dataset):
 
-    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True, out_type='raw'):
+    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True, out_type='raw', n_mels=128):
         _, ext = os.path.splitext(path)
         if ext == ".p":
             d = pickle.load(open(path, 'rb'))
@@ -53,13 +53,13 @@ class SoundfileDataset(Dataset):
         self.hotvec = hotvec     # whether to return labels as one-hot-vec
         self.cut_data = cut_data # whether data is only 30s per song
         self.out_type = out_type # 'raw' or 'mel'
+        self.n_mels = n_mels
     
     def calc_mel(self, song, sr):
         n_fft = 2**11         # shortest human-disting. sound (music)
         hop_length = 2**10    # => 50% overlap of frames
-        n_mels = 128
 
-        return librosa.feature.melspectrogram(song, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
+        return librosa.feature.melspectrogram(song, sr=sr, n_mels=self.n_mels, n_fft=n_fft, hop_length=hop_length)
 
 
     def __getitem__(self, idx):
