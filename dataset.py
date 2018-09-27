@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
     IPATH = "./dataset.ln"  # => README.MD
 
-    dset = SoundfileDataset("./all_metadata.p", IPATH, seg_size=30, cut_data=True)
+    dset = SoundfileDataset("./all_metadata.p", IPATH, seg_size=30, cut_data=True, out_type='mel')
     
     print(len(dset))
     X, y = dset[0]
