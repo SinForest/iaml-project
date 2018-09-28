@@ -87,7 +87,7 @@ class SoundfileDataset(Dataset):
         else:
             y = this.label
 
-        return X, y
+        return torch.as_tensor(X, dtype=torch.float32), y
         
     def __len__(self):
         return len(self.data)
