@@ -11,9 +11,9 @@ from model import Model
 
 # CONST:
 IPATH       = "../dataset.ln"
-BATCH_SIZE  = 4
+BATCH_SIZE  = 64
 N_PROC      = 2
-CUDA_DEVICE = -1 #NOCUDA
+CUDA_DEVICE = 0 #NOCUDA
 N_MELS      = 128
 
 print("### creating dataset ###")
