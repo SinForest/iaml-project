@@ -12,7 +12,7 @@ from model import Model
 # CONST:
 IPATH       = "../dataset.ln"
 BATCH_SIZE  = 64
-N_PROC      = 2
+N_PROC      = 32
 CUDA_DEVICE = 0 #NOCUDA
 N_MELS      = 128
 

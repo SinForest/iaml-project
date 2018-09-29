@@ -67,18 +67,21 @@ class SoundfileDataset(Dataset):
 
         this = self.data[idx]
 
-        offs = np.random.randint((this.duration if not self.cut_data else 30) - self.seg_size + 1) # offset to start random crop
-        tqdm.write(f"dur: {this.duration}; off: {offs};")
-        song, sr = librosa.load(os.path.join(self.ipath, this.path), mono=True, offset=offs, duration=self.seg_size)
-        # (change resampling method, if to slow)
+        offs = np.random.randint((this.duration if not self.cut_data else 31) - self.seg_size) # offset to start random crop
+        try:
+            song, sr = librosa.load(os.path.join(self.ipath, this.path), mono=True, offset=offs, duration=self.seg_size)
+            # (change resampling method, if to slow)
 
-        if self.out_type == 'raw':
-            X = song
-        elif self.out_type == 'mel':
-            X = self.calc_mel(song, sr)
-        else:
-            raise ValueError(f"wrong out_type '{self.out_type}'")
-        # do we really need to log(S) this? skip this for first attempts
+            if self.out_type == 'raw':
+                X = song
+            elif self.out_type == 'mel':
+                X = self.calc_mel(song, sr)
+            else:
+                raise ValueError(f"wrong out_type '{self.out_type}'")
+    # do we really need to log(S) this? skip this for first attempts
+        except Exception as e:
+            print(f"offs:{offs}; dur:{this.duration}; len:{len(song)}; pth:{this.path}")
+            raise e
         del song, sr
 
         # create hot-vector (if needed)
