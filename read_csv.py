@@ -3,8 +3,11 @@
 from csv import reader
 import pickle
 from tqdm import tqdm
+import subprocess
+import os
 
 CSV_PATH = "./metadata.ln/tracks.csv" # => README.MD
+MP3_PATH = "./dataset.ln/"
 PICKLE_PATH = "./all_metadata.p"
 
 def read_dict(path):
@@ -51,5 +54,13 @@ if __name__ == "__main__":
         else:
             for k2, v2 in v1.items():
                 print(f"{k1}:{k2} => {v2}")
+    
+    for v in res.values():
+        op = subprocess.run(["mp3info", "-p '%S'", os.path.join(MP3_PATH, v['path'])], capture_output=True)
+        new = int(float(op.stdout))
+        if int(v['track']['duration']) != new:
+            print(f"{v['path']}: {v['track']['duration']}=>{new}")
+            v['track']['duration'] = str(new)
+            
 
     pickle.dump(res, open(PICKLE_PATH, "wb"))
