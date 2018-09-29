@@ -23,7 +23,7 @@ class SoundfileDataset(Dataset):
         
         # Remove non-existent data points (e.g. b/c of smaller subset)
         tmp_len = len(d)
-        d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and v["track"]["duration"] > seg_size}
+        d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and int(v["track"]["duration"]) > seg_size}
         if verbose:
             print(f"removed {tmp_len - len(d)}/{tmp_len} non-existing/too short items" )
 
@@ -40,7 +40,7 @@ class SoundfileDataset(Dataset):
         self.data = []
         for key, val in tqdm(d.items(), desc="build dataset"):
             try:          # |id is actually not needed here
-                tmp = Struct(id=key, path=val['path'], duration=val["track"]["duration"],
+                tmp = Struct(id=key, path=val['path'], duration=int(val["track"]["duration"]),
                              label=self.lbl2idx[ val['track']['genre_top'] ])
                              #labels=[int(x) for x in val['track']['genres_all'][1:-1].split(",")])
             except ValueError as e:
