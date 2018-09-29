@@ -68,7 +68,7 @@ class SoundfileDataset(Dataset):
         this = self.data[idx]
 
         offs = np.random.randint((this.duration if not self.cut_data else 30) - self.seg_size + 1) # offset to start random crop
-        tqdm.write("dur: {}; off: {};")
+        tqdm.write(f"dur: {this.duration}; off: {offs};")
         song, sr = librosa.load(os.path.join(self.ipath, this.path), mono=True, offset=offs, duration=self.seg_size)
         # (change resampling method, if to slow)
 
