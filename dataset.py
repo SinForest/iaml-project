@@ -23,9 +23,9 @@ class SoundfileDataset(Dataset):
         
         # Remove non-existent data points (e.g. b/c of smaller subset)
         tmp_len = len(d)
-        d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path']))}
+        d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and v["track"]["duration"] > seg_size}
         if verbose:
-            print(f"removed {tmp_len - len(d)}/{tmp_len} non-existing items" )
+            print(f"removed {tmp_len - len(d)}/{tmp_len} non-existing/too short items" )
 
         # Generate class-idx-converter
         classes = set()

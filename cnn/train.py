@@ -17,7 +17,7 @@ CUDA_DEVICE = 0 #NOCUDA
 N_MELS      = 128
 
 print("### creating dataset ###")
-dset = SoundfileDataset("../all_metadata.p", IPATH, seg_size=30, cut_data=True, out_type='mel', n_mels=N_MELS)
+dset = SoundfileDataset("../all_metadata.p", IPATH, seg_size=30, out_type='mel', n_mels=N_MELS)
 print("### building model ###")
 model = Model(*dset[0][0].shape, dset.n_classes)
 if CUDA_DEVICE > -1:
