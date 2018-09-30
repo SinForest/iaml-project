@@ -1,6 +1,7 @@
 #!/bin/env python3
 # requires python3.6 or higher (Hooray for f-Strings! \o/)
 import torch
+import random
 from torch.utils.data import Dataset, DataLoader
 from read_csv import read_dict
 import os
@@ -12,7 +13,7 @@ import librosa
 
 class SoundfileDataset(Dataset):
 
-    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True, out_type='raw', n_mels=128):
+    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True, out_type='raw', n_mels=128, random_slice=None):
         _, ext = os.path.splitext(path)
         if ext == ".p":
             d = pickle.load(open(path, 'rb'))
@@ -26,6 +27,9 @@ class SoundfileDataset(Dataset):
         d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and int(v["track"]["duration"]) > seg_size}
         if verbose:
             print(f"removed {tmp_len - len(d)}/{tmp_len} non-existing/too short items" )
+        
+        if random_slice:
+            d = {k:v for k, v in d.items() if k in np.random.choice(list(d.keys()), size=random_slice, replace=False)}
 
         # Generate class-idx-converter
         classes = set()
