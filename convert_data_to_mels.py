@@ -15,11 +15,11 @@ def save_mel(paths):
         n_mels = 128
 
         X = librosa.feature.melspectrogram(song, sr=sr, n_fft=n_fft, hop_length=hop_length)
-
+        print(X.shape)
         if not os.path.isdir(os.path.dirname(outpath)):
             os.makedirs(os.path.dirname(outpath))
         
-        np.save(outpath, X)
+        np.save(outpath, X.astype(np.float32))
     except:
         return 1
 
