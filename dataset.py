@@ -29,7 +29,7 @@ class SoundfileDataset(Dataset):
             print(f"removed {tmp_len - len(d)}/{tmp_len} non-existing/too short items" )
         
         if random_slice:
-            d = {k:v for k, v in d.items() if k in np.random.choice(list(d.keys()), size=random_slice, replace=False)}
+            d = dict(random.sample(d.items(), random_slice))
 
         # Generate class-idx-converter
         classes = set()
