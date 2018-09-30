@@ -1,7 +1,13 @@
-
+import h5py
 import librosa
 import numpy as np
 import os
+import pickle
+import multiprocessing
+from tqdm import tqdm
+
+INPATH  = "./dataset.ln"
+OUTPATH = "./melsset.ln"
 
 def save_mel(paths):
     
@@ -15,7 +21,6 @@ def save_mel(paths):
         n_mels = 128
 
         X = librosa.feature.melspectrogram(song, sr=sr, n_fft=n_fft, hop_length=hop_length)
-        print(X.shape)
         if not os.path.isdir(os.path.dirname(outpath)):
             os.makedirs(os.path.dirname(outpath))
         
@@ -26,7 +31,20 @@ def save_mel(paths):
     return 0
 
 def main():
-    print(save_mel(("/share/fma_full/000/000002.mp3", "/scratch/fma_mels/000/000002.npy")))
+    d = pickle.load(open("./all_metadata.p", 'rb'))
+    l = [(os.path.join(INPATH, x['path']), os.path.join(OUTPATH, x['path'][:-4] + '.npy')) for x in d.values()]
+    del d
+
+    pool = multiprocessing.Pool()
+
+    imap = pool.imap(save_mel, l)
+    ssss = sum([x for x in tqdm(imap)])
+
+    print(f"finished, {ssss} errors occured")
+    
+
+
+    #print(save_mel(("/share/fma_full/000/000002.mp3", "/scratch/fma_mels/000/000002.npy")))
 
 if __name__ == '__main__':
     main()
