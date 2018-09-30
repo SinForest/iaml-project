@@ -13,13 +13,13 @@ from model import Model
 
 # CONST:
 IPATH       = "../dataset.ln"
-BATCH_SIZE  = 3
-N_PROC      = 2
-CUDA_DEVICE = -1 #NOCUDA
+BATCH_SIZE  = 32
+N_PROC      = 32
+CUDA_DEVICE = 0 #NOCUDA
 N_MELS      = 128
 
 print("### creating dataset ###")
-dset = SoundfileDataset("../all_metadata.p", IPATH, seg_size=30, out_type='mel', n_mels=N_MELS, random_slice=10*BATCH_SIZE+1, cut_data=True)
+dset = SoundfileDataset("../all_metadata.p", IPATH, seg_size=30, out_type='mel', n_mels=N_MELS, random_slice=10*BATCH_SIZE+1)#, cut_data=True)
 print("### building model ###")
 model = Model(*dset[0][0].shape, dset.n_classes)
 if CUDA_DEVICE > -1:
