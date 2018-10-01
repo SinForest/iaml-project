@@ -23,7 +23,7 @@ N_PROC = 32
 num_epochs  = 1
 CUDA_ON     = True
 
-DATA_PATH   = "../metadata.ln/tracks.csv"
+DATA_PATH   = "../all_metadata.p"
 
 def find_device():
     if (CUDA_ON and not torch.cuda.is_available()):
@@ -46,6 +46,7 @@ def main():
     optimizer = optim.RMSprop(model.parameters())
     criterion = nn.CrossEntropyLoss()
     
+    print('begin training')
     for epoch in range(0, num_epochs):
     
         dataloader  = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=N_PROC, drop_last=True)
