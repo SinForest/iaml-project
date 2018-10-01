@@ -128,6 +128,17 @@ class SoundfileDataset(Dataset):
 
         return np.array([avg, std, mxe, mne, med, frd])
 
+    def shrink_song(self, song, sr):
+        # each run takes 2678 ms of the song
+        runs = 10
+        # magic numbers falling out of the paper, may need changing
+        filter_length = 3
+        depth = 9
+
+        sample_num = runs * (filter_length ** (depth+1))
+
+        return song[:sample_num]
+
 
     def __getitem__(self, idx):
         #TODO: benchmark by iterating over pass'ing Dataloader
@@ -137,6 +148,7 @@ class SoundfileDataset(Dataset):
         offs = np.random.randint((this.duration if not self.cut_data else 30) - self.seg_size + 1) # offset to start random crop
         song, sr = librosa.load(os.path.join(self.ipath, this.path), mono=True, offset=offs, duration=self.seg_size)
         # (change resampling method, if to slow)
+        # please tell me (T. Wuensche) if you change the sample rate from sr=22050, as sample-dcnn needs a constant value and may need to be adjusted.
 
         if self.out_type == 'raw':
             X = song
@@ -144,6 +156,8 @@ class SoundfileDataset(Dataset):
             X = self.calc_mel(song, sr)
         elif self.out_type == 'entr':
             X = self.calc_entropy(song)
+        elif self.out_type == 'sample':
+            X = self.shrink_song(song, sr)
         else:
             raise ValueError(f"wrong out_type '{self.out_type}'")
         # do we really need to log(S) this? skip this for first attempts
