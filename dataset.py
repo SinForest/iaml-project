@@ -135,8 +135,9 @@ class SoundfileDataset(Dataset):
         filter_length = 3
         depth = 9
 
-        sample_num = runs * (filter_length ** (depth+1))
-
+        sample_num = (filter_length ** (depth+1))
+        
+        
         return song[:sample_num]
 
 
