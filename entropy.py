@@ -1,97 +1,113 @@
-#!/bin/env python3
-import librosa
-import librosa.display
-import matplotlib.pyplot as plt
+#!/usr/bin/env python3
 import numpy as np
-from tqdm import trange
+import torch
+import pickle
+import torchvision
+import torch.nn as nn
+import torch.optim as optim
+from torch.autograd import Variable as Var
+from torch import Tensor as Ten
+from dataset import SoundfileDataset
+import operator
+import sys, os
 
-fsize = 1024
-ssize = 512
+num_epochs  = 10
+batch_s     = 2
+learn_r     = 0.001
+log_percent = 0.01
+CUDA_ON     = True
+SHUFFLE_ON  = False
 
-y, sr = librosa.load("/home/flo/IAML/fma_small/000/000140.mp3", duration=30.0, mono=True)
-lenY = y.shape[0]
-lenCut = lenY-(lenY%ssize)
-print(lenY, lenCut)
+DATA_PATH   = "./all_metadata.p"
+MODEL_PATH  = "../models/"
 
-energy = (y[:lenCut].reshape(-1,ssize))**2
-energylist = np.concatenate((energy[:-1], energy[1:]), axis=1)
+dataset = SoundfileDataset(path=DATA_PATH, seg_size=2, hotvec=False, cut_data=True, verbose=False, out_type='entr')
+dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_s, shuffle=SHUFFLE_ON, num_workers=6)
+log_interval = np.ceil((len(dataloader.dataset) * log_percent) / batch_s)
 
-framelist = energylist.sum(axis=1)
 
-p = energylist / framelist[:,None]
-entropy = -(p * np.nan_to_num(np.log2(p))).sum(axis=1)
+""" for batch_id, (data, target) in enumerate(dataloader):
+    print(batch_id, " ", data, dataset.data[batch_id]) """
 
-entdif = entropy[:-1] - entropy[1:]
-med = max(entdif.min(), entdif.max(), key=abs)
+print(dataset.n_classes)
 
-BlockSize = []
-BlockSize.append(1)
-NumBox = []
-NumBox.append(1)
+model = nn.Sequential(
+            nn.Linear(6, 2048),
+            nn.PReLU(num_parameters=2048),
+            nn.BatchNorm1d(2048),
+            nn.Dropout(p=0.5),
+            nn.Linear(2048, 2048),
+            nn.PReLU(num_parameters=2048),
+            nn.BatchNorm1d(2048),
+            nn.Dropout(p=0.5),
+            nn.Linear(2048, 2048),
+            nn.PReLU(num_parameters=2048),
+            nn.BatchNorm1d(2048),
+            nn.Dropout(p=0.5),
+            nn.Linear(2048, dataset.n_classes)
+        )
 
-for i in range(0, lenY-1):
-    NumBox[0] += 1 + abs(y[i]-y[i+1])
+for m in model.modules():
+    if isinstance(m, nn.BatchNorm1d):
+        m.weight.data.fill_(1)
+        m.bias.data.zero_()
+        m.running_mean.zero_()
+        m.running_var.fill_(1)
+    elif isinstance(m, nn.Linear):
+        m.weight.data.normal_(0, 0.01)
+        m.bias.data.zero_()
 
-NumCols = int(lenY / 2)
-UpperValue = [None] * NumCols
-LowerValue = [None] * NumCols
+optimizer = optim.Adam(model.parameters(), lr=learn_r)
+criterion = nn.CrossEntropyLoss()
 
-for i in range(0, NumCols):
-    UpperValue[i] = max(y[2*i], y[2*i+1])
-    LowerValue[i] = min(y[2*i], y[2*i+1])
+if CUDA_ON:
+    model.cuda()
 
-maxScale = int(np.floor(np.log(lenY) / np.log(2)))
+print(sum([sum([y.numel() for y in x.parameters()]) for x in model.modules() if type(x) not in {nn.Sequential}]))
 
-for scale in range(1, maxScale):
-    dummy = 0
-    BlockSize.append(BlockSize[scale-1]*2)
-    for i in range(0, NumCols-1):
-        dummy += UpperValue[i] - LowerValue[i] + 1
-        if UpperValue[i] < LowerValue[i+1]:
-            dummy += LowerValue[i+1] - UpperValue[i]
-        if LowerValue[i] > UpperValue[i+1]:
-            dummy += LowerValue[i] - UpperValue[i+1]
+def train(epoch):
+    total_loss = 0
+    total_size = 0
+    model.train()
+    accuracy = 0
+    for batch_id, (data, target) in enumerate(dataloader):
+        
+        data = data.type(torch.FloatTensor)
+
+        if CUDA_ON:
+            data, target = data.cuda(), target.cuda()
+        
+        optimizer.zero_grad()
+
+        output = model(data)
+
+        loss = criterion(output, target)
+
+        total_loss += loss.item()
+        total_size += data.size(0)
+
+        accur = (torch.max(output, 1)[1] == target).sum()
+        accuracy += accur 
+
+        loss.backward()
+        optimizer.step()
+        
+        #if batch_id % log_interval == 0:
+        print('Train Epoch: {} [{:>5d}/{:> 5d} ({:>2.0f}%)]\tCurrent loss: {:.6f}\t Current accuracy: {:.2f}%'.format(
+        epoch, total_size, len(dataloader.dataset), 100. * batch_id / len(dataloader), loss.item()/data.size(0), accur/batch_s))
+
+    print('Train Epoch: {}, Entropy average loss: {:.6f}, Entropy average accuracy: {:.2f}%'.format(
+            epoch, total_loss / total_size, accuracy/ total_size))
     
-    NumBox.append(dummy/BlockSize[scale])
-    NumCols = int(NumCols / 2)
-    for i in range (0, NumCols):
-        UpperValue[i] = max(UpperValue[2*i], UpperValue[2*i+1])
-        LowerValue[i] = min(LowerValue[2*i], LowerValue[2*i+1])
+    return (total_loss/total_size ,accuracy / total_size)
 
-BlockSize = np.array(BlockSize)
-NumBox = np.array(NumBox)
-print("SHAPES")
-print(BlockSize)
-print(NumBox)
-
-N = np.log(NumBox)
-R = np.log(1/BlockSize)
-m = np.linalg.lstsq(R[:,None],N)
-print(m[0][0])
-
-
-""" smax = int(y.shape[0] / 2)
-N = []
-R = []
-for s in trange(2, smax):
-    cutS = lenY - (lenY%s)
-    r = s / lenY
-    frac = y[:cutS].reshape(-1,s)
-    subMax = np.max(frac, axis=1)
-    subMin = np.min(frac, axis=1)
-    nr = ((subMax - subMin) + 1)/s
-    Nr = np.sum(np.ceil(nr))
-    N.append(Nr)
-    R.append(r)
-
-N = np.log(N)
-R = np.log(1/np.array(R))
-m = np.linalg.lstsq(R[:,None],N) """
-
-avg = np.average(entropy)
-std = np.std(entropy)
-mxe = np.max(entropy)
-mne = np.min(entropy)
-frd = m[0][0]
-
-print(avg, std, mxe, mne, med, frd)
+loss_list = []
+acc_list  = []
+print("Beginning Training")
+for epoch in range(0, num_epochs):
+    loss, acc = train(epoch)
+    loss_list.append(loss)
+    acc_list.append(acc)
+    state = {'state_dict':model.state_dict(), 'optim':optimizer.state_dict(), 'epoch':epoch, 'train_loss':loss_list, 'accuracy': acc_list}
+    filename = "../models/entropy_{:02d}.nn".format(epoch)
+    torch.save(state, filename)

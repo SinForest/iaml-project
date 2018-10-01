@@ -21,6 +21,8 @@ class SoundfileDataset(Dataset):
         else:
             raise RuntimeError(f"{path}: extention '{ext[1:]}' not known")
         
+        np.seterr(all='ignore')
+        
         # Remove non-existent data points (e.g. b/c of smaller subset)
         tmp_len = len(d)
         d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path']))}
@@ -61,6 +63,71 @@ class SoundfileDataset(Dataset):
 
         return librosa.feature.melspectrogram(song, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
 
+    def calc_entropy(self, song):
+        fsize = 1024
+        ssize = 512
+        
+        lenY = song.shape[0]
+        lenCut = lenY-(lenY%ssize)
+        if(lenY < fsize): print("WTF DUDE!")
+
+        energy = (song[:lenCut].reshape(-1,ssize))**2
+        energylist = np.concatenate((energy[:-1], energy[1:]), axis=1)
+
+        framelist = energylist.sum(axis=1)
+
+        p = energylist / framelist[:,None]
+        entropy = -np.nan_to_num(p * np.nan_to_num(np.log2(p))).sum(axis=1)
+
+        entdif = entropy[:-1] - entropy[1:]
+        med = max(entdif.min(), entdif.max(), key=abs)
+
+        blocksize = []
+        blocksize.append(1)
+        numbox = []
+        numbox.append(1)
+
+        for i in range(0, lenY-1):
+            numbox[0] += 1 + abs(song[i]-song[i+1])
+
+        numcols = int(lenY / 2)
+        UpperValue = [None] * numcols
+        LowerValue = [None] * numcols
+
+        for i in range(0, numcols):
+            UpperValue[i] = max(song[2*i], song[2*i+1])
+            LowerValue[i] = min(song[2*i], song[2*i+1])
+
+        maxScale = int(np.floor(np.log(lenY) / np.log(2)))
+
+        for scale in range(1, maxScale):
+            dummy = 0
+            blocksize.append(blocksize[scale-1]*2)
+            for i in range(0, numcols-1):
+                dummy += UpperValue[i] - LowerValue[i] + 1
+                if UpperValue[i] < LowerValue[i+1]:
+                    dummy += LowerValue[i+1] - UpperValue[i]
+                if LowerValue[i] > UpperValue[i+1]:
+                    dummy += LowerValue[i] - UpperValue[i+1]
+            
+            numbox.append(dummy/blocksize[scale])
+            numcols = int(numcols / 2)
+            for i in range (0, numcols):
+                UpperValue[i] = max(UpperValue[2*i], UpperValue[2*i+1])
+                LowerValue[i] = min(LowerValue[2*i], LowerValue[2*i+1])
+
+        N = np.log(numbox)
+        R = np.log(1/np.array(blocksize))
+        m = np.linalg.lstsq(R[:,None],N, rcond=None)
+
+        avg = np.average(entropy)
+        std = np.std(entropy)
+        mxe = np.max(entropy)
+        mne = np.min(entropy)
+        frd = m[0][0]
+
+        return np.array([avg, std, mxe, mne, med, frd])
+
 
     def __getitem__(self, idx):
         #TODO: benchmark by iterating over pass'ing Dataloader
@@ -75,6 +142,8 @@ class SoundfileDataset(Dataset):
             X = song
         elif self.out_type == 'mel':
             X = self.calc_mel(song, sr)
+        elif self.out_type == 'entr':
+            X = self.calc_entropy(song)
         else:
             raise ValueError(f"wrong out_type '{self.out_type}'")
         # do we really need to log(S) this? skip this for first attempts
