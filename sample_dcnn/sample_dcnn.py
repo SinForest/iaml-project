@@ -18,12 +18,13 @@ from sample_dcnn_model import Model
 sys.path.append("../")
 from dataset import SoundfileDataset
 
-BATCH_SIZE  = 64
-N_PROC = 32
+BATCH_SIZE  = 8
+N_PROC = 8
 num_epochs  = 1
 CUDA_ON     = True
 
-DATA_PATH   = "../all_metadata.p"
+METADATA_PATH   = "../all_metadata.p"
+DATASET_PATH    = "../dataset.ln"
 
 def find_device():
     if (CUDA_ON and not torch.cuda.is_available()):
@@ -38,7 +39,7 @@ def main():
     device = find_device()
     
     print('=> loading dataset <=')
-    dataset = SoundfileDataset(path=DATA_PATH, out_type='sample')
+    dataset = SoundfileDataset(METADATA_PATH, DATASET_PATH, out_type='sample')
     print('=> dataset loaded <=')
     
     model = Model(dataset.n_classes).to(device)
@@ -46,13 +47,16 @@ def main():
     optimizer = optim.RMSprop(model.parameters())
     criterion = nn.CrossEntropyLoss()
     
-    print('begin training')
+    print('=> begin training <=')
     for epoch in range(0, num_epochs):
     
-        dataloader  = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=N_PROC, drop_last=True)
+        dataloader  = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=N_PROC, drop_last=True)
         abs_prec = 0
+        
+        print(dataloader.dataset.data)
+        
         for X, y in tqdm(dataloader, desc=f'epoch {epoch}'):
-    
+
             with torch.set_grad_enabled(True):
     
                 pred = model(X)

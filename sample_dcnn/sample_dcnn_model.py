@@ -11,7 +11,6 @@ import torch.nn as nn
 class Model(nn.Module):
     def __init__(self, num_labels):
         super().__init__()
-        
         filter_length = 3
         # depth = 9
         padding = (filter_length-1)/2
