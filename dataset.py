@@ -132,6 +132,26 @@ class SoundfileDataset(Dataset):
 
         return np.array([avg, std, mxe, mne, med, frd])
 
+    def shrink_song(self, song, sr):
+        # each run takes 2678 ms of the song
+        segments = 10
+        # magic numbers falling out of the paper, may need changing
+        filter_length = 3
+        depth = 9
+                
+        sample_num = (filter_length ** (depth+1))
+        
+        # not elegant, but it prevents crashes and doesn't happen often enough to influence accuracy
+        if(song.size < segments * sample_num):
+            missing = segments * sample_num -song.size
+            filler = 2 * np.random.rand(missing).astype('f') -1
+            song = np.append(song, filler)
+
+        
+        reshaped_song = song[:segments * sample_num].reshape(segments,sample_num)
+        
+        return reshaped_song
+
 
     def __getitem__(self, idx):
         #TODO: benchmark by iterating over pass'ing Dataloader
@@ -149,6 +169,8 @@ class SoundfileDataset(Dataset):
                 X = self.calc_mel(song, sr)
             elif self.out_type == 'entr':
                 X = self.calc_entropy(song)
+            elif self.out_type == 'sample':
+                X = self.shrink_song(song, sr)
             else:
                 raise ValueError(f"wrong out_type '{self.out_type}'")
     # do we really need to log(S) this? skip this for first attempts

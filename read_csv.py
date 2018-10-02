@@ -15,6 +15,8 @@ def read_dict(path):
     reads the complete metadata dict for all files from a .csv-file
     """
     read = reader(open(path), delimiter=',')
+    # required to fix problems with windows line endings
+    #read = reader(open(path, encoding="utf8"), delimiter=',')
     head = list(zip(tuple(next(read)), tuple(next(read))))
     next(read) #empty line
 
