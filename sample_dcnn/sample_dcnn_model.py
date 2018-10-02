@@ -13,7 +13,7 @@ class Model(nn.Module):
         super().__init__()
         filter_length = 3
         # depth = 9
-        padding = (filter_length-1)/2
+        padding = int(round((filter_length-1)/2))
         modules = []
         
         modules.append(nn.Conv1d(1,128,filter_length,stride=filter_length,padding=padding))
@@ -66,19 +66,19 @@ class Model(nn.Module):
         modules.append(nn.MaxPool1d(filter_length))
         
         modules.append(nn.Conv1d(512,512,1,stride=1))
-        modules.append(nn.BatchNorm1d(512))
-        modules.append(nn.ReLU())
         modules.append(nn.Dropout(0.5))
         
         #modules.append(nn.Sigmoid())
 
         self.conv = nn.Sequential(*modules)
         
-        self.fc = nn.Sequential(nn.Linear(512, num_labels))
+        self.fc = nn.Sequential(nn.Linear(512, num_labels), nn.Sigmoid())
 
   
 
     def forward(self, x):
         x = self.conv(x)
+        x = x.view(-1, 1, 512)
         x = self.fc(x)
+        x = x.mean(1)
         return x

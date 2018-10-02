@@ -138,7 +138,7 @@ class SoundfileDataset(Dataset):
         sample_num = (filter_length ** (depth+1))
         
         
-        return song[:sample_num]
+        return song[:sample_num].reshape(1,sample_num)
 
 
     def __getitem__(self, idx):

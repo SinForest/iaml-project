@@ -18,8 +18,8 @@ from sample_dcnn_model import Model
 sys.path.append("../")
 from dataset import SoundfileDataset
 
-BATCH_SIZE  = 8
-N_PROC = 8
+BATCH_SIZE  = 10
+N_PROC = 0
 num_epochs  = 1
 CUDA_ON     = True
 
@@ -36,13 +36,15 @@ def find_device():
 
 
 def main():
+
     device = find_device()
     
     print('=> loading dataset <=')
-    dataset = SoundfileDataset(METADATA_PATH, DATASET_PATH, out_type='sample')
+    dataset = SoundfileDataset(METADATA_PATH, DATASET_PATH, cut_data=True, out_type='sample')
     print('=> dataset loaded <=')
-    
-    model = Model(dataset.n_classes).to(device)
+    model = Model(dataset.n_classes)
+    model = model.to(device)    
+
     
     optimizer = optim.RMSprop(model.parameters())
     criterion = nn.CrossEntropyLoss()
@@ -53,14 +55,16 @@ def main():
         dataloader  = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=N_PROC, drop_last=True)
         abs_prec = 0
         
-        print(dataloader.dataset.data)
         
         for X, y in tqdm(dataloader, desc=f'epoch {epoch}'):
 
             with torch.set_grad_enabled(True):
+                
+                X = X.to(device)
+                y = y.to(device)
     
                 pred = model(X)
-                loss = criterion(pred, y)
+                loss = criterion(pred, y.long())
                 optimizer.zero_grad()
     
                 loss.backward()
