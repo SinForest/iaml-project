@@ -9,14 +9,14 @@ import torch.nn as nn
 
 
 class Model(nn.Module):
-    def __init__(self, num_labels):
+    def __init__(self,segments, samples, num_labels):
         super().__init__()
         filter_length = 3
         # depth = 9
         padding = int(round((filter_length-1)/2))
         modules = []
         
-        modules.append(nn.Conv1d(1,128,filter_length,stride=filter_length,padding=padding))
+        modules.append(nn.Conv1d(segments,128,filter_length,stride=filter_length,padding=padding))
         modules.append(nn.BatchNorm1d(128))
         modules.append(nn.ReLU())
         
@@ -77,6 +77,7 @@ class Model(nn.Module):
   
 
     def forward(self, x):
+        
         x = self.conv(x)
         x = x.view(-1, 1, 512)
         x = self.fc(x)

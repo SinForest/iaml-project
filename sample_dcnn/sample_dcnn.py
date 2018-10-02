@@ -22,6 +22,10 @@ BATCH_SIZE  = 10
 N_PROC = 0
 num_epochs  = 1
 CUDA_ON     = True
+SEGMENTS        = 10
+FILTER_LENGTH   = 3
+DEPTH           = 9
+SAMPLES         = (FILTER_LENGTH ** (DEPTH+1))    
 
 METADATA_PATH   = "../all_metadata.p"
 DATASET_PATH    = "../dataset.ln"
@@ -42,7 +46,7 @@ def main():
     print('=> loading dataset <=')
     dataset = SoundfileDataset(METADATA_PATH, DATASET_PATH, cut_data=True, out_type='sample')
     print('=> dataset loaded <=')
-    model = Model(dataset.n_classes)
+    model = Model(SEGMENTS, SAMPLES, dataset.n_classes)
     model = model.to(device)    
 
     
@@ -62,7 +66,6 @@ def main():
                 
                 X = X.to(device)
                 y = y.to(device)
-    
                 pred = model(X)
                 loss = criterion(pred, y.long())
                 optimizer.zero_grad()

@@ -130,15 +130,23 @@ class SoundfileDataset(Dataset):
 
     def shrink_song(self, song, sr):
         # each run takes 2678 ms of the song
-        runs = 10
+        segments = 10
         # magic numbers falling out of the paper, may need changing
         filter_length = 3
         depth = 9
-
+                
         sample_num = (filter_length ** (depth+1))
         
+        # not elegant, but it prevents crashes and doesn't happen often enough to influence accuracy
+        if(song.size < segments * sample_num):
+            missing = segments * sample_num -song.size
+            filler = 2 * np.random.rand(missing) -1
+            song = np.append(song, filler)
+
         
-        return song[:sample_num].reshape(1,sample_num)
+        reshaped_song = song[:segments * sample_num].reshape(segments,sample_num)
+        
+        return reshaped_song
 
 
     def __getitem__(self, idx):
