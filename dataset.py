@@ -1,6 +1,7 @@
 #!/bin/env python3
 # requires python3.6 or higher (Hooray for f-Strings! \o/)
 import torch
+import random
 from torch.utils.data import Dataset, DataLoader
 from read_csv import read_dict
 import os
@@ -12,7 +13,7 @@ import librosa
 
 class SoundfileDataset(Dataset):
 
-    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True, out_type='raw'):
+    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True, out_type='raw', n_mels=128, random_slice=None):
         _, ext = os.path.splitext(path)
         if ext == ".p":
             d = pickle.load(open(path, 'rb'))
@@ -25,9 +26,12 @@ class SoundfileDataset(Dataset):
         
         # Remove non-existent data points (e.g. b/c of smaller subset)
         tmp_len = len(d)
-        d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path']))}
+        d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and int(v["track"]["duration"]) > seg_size}
         if verbose:
-            print(f"removed {tmp_len - len(d)}/{tmp_len} non-existing items" )
+            print(f"removed {tmp_len - len(d)}/{tmp_len} non-existing/too short items" )
+        
+        if random_slice:
+            d = dict(random.sample(d.items(), random_slice))
 
         # Generate class-idx-converter
         classes = set()
@@ -42,7 +46,7 @@ class SoundfileDataset(Dataset):
         self.data = []
         for key, val in tqdm(d.items(), desc="build dataset"):
             try:          # |id is actually not needed here
-                tmp = Struct(id=key, path=val['path'], duration=val["track"]["duration"],
+                tmp = Struct(id=key, path=val['path'], duration=int(val["track"]["duration"]),
                              label=self.lbl2idx[ val['track']['genre_top'] ])
                              #labels=[int(x) for x in val['track']['genres_all'][1:-1].split(",")])
             except ValueError as e:
@@ -55,13 +59,13 @@ class SoundfileDataset(Dataset):
         self.hotvec = hotvec     # whether to return labels as one-hot-vec
         self.cut_data = cut_data # whether data is only 30s per song
         self.out_type = out_type # 'raw' or 'mel'
+        self.n_mels = n_mels
     
     def calc_mel(self, song, sr):
         n_fft = 2**11         # shortest human-disting. sound (music)
         hop_length = 2**10    # => 50% overlap of frames
-        n_mels = 128
 
-        return librosa.feature.melspectrogram(song, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
+        return librosa.feature.melspectrogram(song, sr=sr, n_mels=self.n_mels, n_fft=n_fft, hop_length=hop_length)
 
     def calc_entropy(self, song):
         fsize = 1024
@@ -134,19 +138,24 @@ class SoundfileDataset(Dataset):
 
         this = self.data[idx]
 
-        offs = np.random.randint((this.duration if not self.cut_data else 30) - self.seg_size + 1) # offset to start random crop
-        song, sr = librosa.load(os.path.join(self.ipath, this.path), mono=True, offset=offs, duration=self.seg_size)
-        # (change resampling method, if to slow)
+        offs = np.random.randint((this.duration if not self.cut_data else 31) - self.seg_size) # offset to start random crop
+        try:
+            song, sr = librosa.load(os.path.join(self.ipath, this.path), mono=True, offset=offs, duration=self.seg_size)
+            # (change resampling method, if to slow)
 
-        if self.out_type == 'raw':
-            X = song
-        elif self.out_type == 'mel':
-            X = self.calc_mel(song, sr)
-        elif self.out_type == 'entr':
-            X = self.calc_entropy(song)
-        else:
-            raise ValueError(f"wrong out_type '{self.out_type}'")
-        # do we really need to log(S) this? skip this for first attempts
+            if self.out_type == 'raw':
+                X = song
+            elif self.out_type == 'mel':
+                X = self.calc_mel(song, sr)
+            elif self.out_type == 'entr':
+                X = self.calc_entropy(song)
+            else:
+                raise ValueError(f"wrong out_type '{self.out_type}'")
+    # do we really need to log(S) this? skip this for first attempts
+        except Exception as e:
+            print(f"offs:{offs}; dur:{this.duration}; len:{len(song)}; pth:{this.path}")
+            raise e
+
         del song, sr
 
         # create hot-vector (if needed)
@@ -156,7 +165,7 @@ class SoundfileDataset(Dataset):
         else:
             y = this.label
 
-        return X, y
+        return torch.as_tensor(X, dtype=torch.float32), y
         
     def __len__(self):
         return len(self.data)
@@ -166,7 +175,7 @@ if __name__ == "__main__":
 
     IPATH = "./dataset.ln"  # => README.MD
 
-    dset = SoundfileDataset("./all_metadata.p", IPATH, seg_size=30, cut_data=True)
+    dset = SoundfileDataset("./all_metadata.p", IPATH, seg_size=30, cut_data=True, out_type='mel')
     
     print(len(dset))
     X, y = dset[0]
