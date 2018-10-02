@@ -140,7 +140,7 @@ class SoundfileDataset(Dataset):
         # not elegant, but it prevents crashes and doesn't happen often enough to influence accuracy
         if(song.size < segments * sample_num):
             missing = segments * sample_num -song.size
-            filler = 2 * np.random.rand(missing) -1
+            filler = 2 * np.random.rand(missing).astype('f') -1
             song = np.append(song, filler)
 
         
