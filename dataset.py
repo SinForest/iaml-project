@@ -7,6 +7,7 @@ from read_csv import read_dict
 import os
 from collections import namedtuple
 from torch.utils.data.sampler import SubsetRandomSampler
+from torch.utils.data import Subset
 import pickle
 from tqdm import tqdm
 import numpy as np
@@ -209,7 +210,7 @@ class SoundfileDataset(Dataset):
     def __len__(self):
         return len(self.data)
     
-    def get_split(self):
+    def get_split(self, sampler=True):
         validation_split = .2
         shuffle_dataset = True
         random_seed= 4 # chosen by diceroll, 100% random  
@@ -223,9 +224,15 @@ class SoundfileDataset(Dataset):
             np.random.shuffle(indices)
         train_indices, val_indices = indices[split:], indices[:split]
         # Creating PT data samplers and loaders:
-        train_sampler = SubsetRandomSampler(train_indices)
-        valid_sampler = SubsetRandomSampler(val_indices)
-        return train_sampler, valid_sampler
+        if sampler:
+            train_sampler = SubsetRandomSampler(train_indices)
+            valid_sampler = SubsetRandomSampler(val_indices)
+            return train_sampler, valid_sampler
+        else:
+            train_set = Subset(self, train_indices)
+            valid_set = Subset(self, val_indices)
+            return train_set, valid_set
+
     
     
 if __name__ == "__main__":
