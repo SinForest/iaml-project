@@ -21,13 +21,14 @@ from dataset import SoundfileDataset
 BATCH_SIZE  = 10
 N_PROC = 0
 num_epochs  = 1
-CUDA_ON     = True
+CUDA_ON     = False
 SEGMENTS        = 10
 FILTER_LENGTH   = 3
 DEPTH           = 9
 SAMPLES         = (FILTER_LENGTH ** (DEPTH+1))    
 
-METADATA_PATH   = "../all_metadata.p"
+#METADATA_PATH   = "../all_metadata.p"
+METADATA_PATH   = "../metadata.ln/tracks.csv"
 DATASET_PATH    = "../dataset.ln"
 
 def find_device():
