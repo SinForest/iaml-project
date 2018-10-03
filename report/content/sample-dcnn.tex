@@ -1,0 +1,71 @@
+\chapter{Sample-level CNN using raw waveforms}
+by Thorsten Wünsche
+
+\bigskip
+
+In this chapter, we attempt to recreate an approach that reduces preprocessing by working with raw waveforms directly. Section \ref{sec:theory} presents the original paper and discusses the theory behind it. In section \ref{sec:development} we discuss the development process up until the first working prototype. Experiments and improvements to our own version are described in section \ref{sec:experiments}. Finally, section \ref{sec:conclusion} summarizes our experiences with this approach.
+
+\section{Theory and original paper}
+\label{sec:theory}
+
+"Sample-level Deep Convolutional Neural Networks for Music Auto-tagging Using Raw Waveforms" \cite{DBLP:journals/corr/LeePKN17} by Jongpil Lee, Jiyoung Park, Keunhyoung Luke Kim, Juhan Nam
+
+\section{Development and limitations}
+\label{sec:development}
+We created our own prototype by recreating the most successful model found by Jongpil Lee, Jiyoung Park, Keunhyoung Luke Kim and Juhan Nam. Their $3^9$ model shown in table \ref{tab:sample-dcnn_original-model} uses a one dimensional filter of size three in a convolutional neural network of depth 9 (1+9+1).  Using a frame-size of three, this model converts 59049 samples into 19683 frames. We also use the same sample size (22050 Hz), so that each input into the model covers 2678 ms of audio.
+
+
+
+\begin{center}
+	\begin{tabular}{ c c c c}
+
+		layer & stride & output & \# of params\\
+		\hline
+		\hline
+		conv 3-128 & 3 & 19683 x 128 & 512 \\
+		\hline
+		conv 3-128 & 1 & 19683 x 128 & 49280 \\
+		maxpool 3 & 3 & 6561 x 128 & \\
+		\hline
+		conv 3-128 & 1 & 6561 x 128 & 49280 \\
+		maxpool 3 & 3 & 2187 x 128 & \\
+		\hline
+		conv 3-256 & 1 & 2187 x 128 & 98560 \\
+		maxpool 3 & 3 & 729 x 256 & \\
+		\hline
+		conv 3-256 & 1 & 729 x 256 & 196864 \\
+		maxpool 3 & 3 & 243 x 256 & \\
+		\hline
+		conv 3-256 & 1 & 243 x 256 & 196864 \\
+		maxpool 3 & 3 & 81 x 256 & \\
+		\hline
+		conv 3-256 & 1 & 81 x 256 & 196864 \\
+		maxpool 3 & 3 & 27 x 256 & \\
+		\hline
+		conv 3-256 & 1 & 27 x 256 & 196864 \\
+		maxpool 3 & 3 & 9 x 256 & \\
+		\hline
+		conv 3-256 & 1 & 9 x 256 & 196864 \\
+		maxpool 3 & 3 & 3 x 256 & \\
+		\hline
+		conv 3-512 & 1 & 3 x 512 & 393728 \\
+		maxpool 3 & 3 & 1 x 512 & \\
+		\hline
+		conv 1-512 & 1 & 1 x 512 & 262656 \\
+		dropout 0.5 & - & 1 x 512 & \\
+		\hline
+		sigmoid & - & 50 & 25650 \\
+		
+		 & & & \\	
+	\end{tabular}
+	\label{tab:sample-dcnn_original-model}
+	\captionof{table}{The original model with the parameters Jongpil Lee, Jiyoung Park, Keunhyoung Luke Kim and Juhan Nam found the most successful. The layer "conv3-128 maxpool3" is to be understood as a one dimansional convolutional layer with filter length 3 producing 128 filters, followed by a maxpool layer with pooling length 3. The 50 in the sigmoid layer is the number of labels in the corresponding dataset.}
+\end{center}
+
+
+
+\section{Experiments}
+\label{sec:experiments}
+
+\section{Conclusion}
+\label{sec:conclusion}

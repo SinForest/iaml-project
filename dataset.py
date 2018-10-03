@@ -6,6 +6,7 @@ from torch.utils.data import Dataset, DataLoader
 from read_csv import read_dict
 import os
 from collections import namedtuple
+from torch.utils.data.sampler import SubsetRandomSampler
 import pickle
 from tqdm import tqdm
 import numpy as np
@@ -13,7 +14,7 @@ import librosa
 
 class SoundfileDataset(Dataset):
 
-    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True, out_type='raw', n_mels=128, random_slice=None):
+    def __init__(self, path, ipath="./dataset.ln", seg_size=30, hotvec=False, cut_data=False, verbose=True, out_type='raw', random_slice=None, mel_seg_size=646):
         _, ext = os.path.splitext(path)
         if ext == ".p":
             d = pickle.load(open(path, 'rb'))
@@ -26,7 +27,10 @@ class SoundfileDataset(Dataset):
         
         # Remove non-existent data points (e.g. b/c of smaller subset)
         tmp_len = len(d)
-        d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and int(v["track"]["duration"]) > seg_size}
+        if out_type == 'pre_mel':
+            d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'][:-3] + "npy")) and int(v["track"]["duration"]) > seg_size}
+        else:
+            d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and int(v["track"]["duration"]) > seg_size}
         if verbose:
             print(f"removed {tmp_len - len(d)}/{tmp_len} non-existing/too short items" )
         
@@ -58,8 +62,9 @@ class SoundfileDataset(Dataset):
         self.ipath = ipath       # path of image data
         self.hotvec = hotvec     # whether to return labels as one-hot-vec
         self.cut_data = cut_data # whether data is only 30s per song
-        self.out_type = out_type # 'raw', 'mel' or 'entr'
-        self.n_mels = n_mels
+        self.out_type = out_type # 'raw' or 'mel' or other stuff
+        self.mel_seg_size = mel_seg_size
+
     
     def calc_mel(self, song, sr):
         n_fft = 2**11         # shortest human-disting. sound (music)
@@ -155,7 +160,8 @@ class SoundfileDataset(Dataset):
 
 
     def __getitem__(self, idx):
-        #TODO: benchmark by iterating over pass'ing Dataloader
+        if self.out_type == 'pre_mel':
+            return self.get_mel(idx)
 
         this = self.data[idx]
 
@@ -189,11 +195,41 @@ class SoundfileDataset(Dataset):
             y = this.label
 
         return torch.as_tensor(X, dtype=torch.float32), y
+    
+    def get_mel(self, idx):
+        this = self.data[idx]
+        X    = np.load(os.path.join(self.ipath, this.path[:-3]) + "npy")
+        le   = X.shape[1] - self.mel_seg_size
+        if le >= 0:
+            offs = np.random.randint(0, le + 1)
+            X = X[:,offs:offs+self.mel_seg_size]
+        else:
+            X = X.pad(((0,0), (0,-le)), 'constant', constant_values=0)
+        
+        return torch.as_tensor(X, dtype=torch.float32), this.label # no 1hot here
         
     def __len__(self):
         return len(self.data)
     
-
+    def get_split(self):
+        validation_split = .2
+        shuffle_dataset = True
+        random_seed= 4 # chosen by diceroll, 100% random  
+        
+        # Creating data indices for training and validation splits:
+        dataset_size = self.__len__()
+        indices = list(range(dataset_size))
+        split = int(np.floor(validation_split * dataset_size))
+        if shuffle_dataset :
+            np.random.seed(random_seed)
+            np.random.shuffle(indices)
+        train_indices, val_indices = indices[split:], indices[:split]
+        # Creating PT data samplers and loaders:
+        train_sampler = SubsetRandomSampler(train_indices)
+        valid_sampler = SubsetRandomSampler(val_indices)
+        return train_sampler, valid_sampler
+    
+    
 if __name__ == "__main__":
 
     IPATH = "./dataset.ln"  # => README.MD
