@@ -18,10 +18,10 @@ _XX = "\033[0m"
 
 # CONST:
 IPATH        = "../melsset.ln"
-BATCH_SIZE   = 2
+BATCH_SIZE   = 32
 N_PROC       = 32
-CUDA_DEVICE  = -1 #NOCUDA
-MEL_SEG_SIZE = 128
+CUDA_DEVICE  = 0 #NOCUDA
+MEL_SEG_SIZE = 512 # ~25sec
 LOG_COUNT    = 20
 
 print("### creating dataset ###")
