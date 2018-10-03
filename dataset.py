@@ -64,6 +64,7 @@ class SoundfileDataset(Dataset):
         self.cut_data = cut_data # whether data is only 30s per song
         self.out_type = out_type # 'raw' or 'mel' or other stuff
         self.mel_seg_size = mel_seg_size
+
     
     def calc_mel(self, song, sr):
         n_fft = 2**11         # shortest human-disting. sound (music)
@@ -76,62 +77,63 @@ class SoundfileDataset(Dataset):
         ssize = 512
         
         lenY = song.shape[0]
-        lenCut = lenY-(lenY%ssize)
-        if(lenY < fsize): print("WTF DUDE!")
+        lenCut = lenY - (lenY % ssize)
+        if(lenY < fsize):
+            print("SONG TOO SHORT!!!")
+            return np.array([0, 0, 0, 0, 0, 0])
 
-        energy = (song[:lenCut].reshape(-1,ssize))**2
+        energy = np.square(song[:lenCut].reshape(-1,ssize))
         energylist = np.concatenate((energy[:-1], energy[1:]), axis=1)
 
         framelist = energylist.sum(axis=1)
-
-        p = energylist / framelist[:,None]
-        entropy = -np.nan_to_num(p * np.nan_to_num(np.log2(p))).sum(axis=1)
-
-        entdif = entropy[:-1] - entropy[1:]
-        med = max(entdif.min(), entdif.max(), key=abs)
+        p = np.nan_to_num(energylist / framelist[:,None]) #whole frame might be 0 causing division by zero
+        entropy = -(p * np.nan_to_num(np.log2(p))).sum(axis=1) #same goes for log
 
         blocksize = []
         blocksize.append(1)
+
         numbox = []
-        numbox.append(1)
-
-        for i in range(0, lenY-1):
-            numbox[0] += 1 + abs(song[i]-song[i+1])
-
-        numcols = int(lenY / 2)
-        UpperValue = [None] * numcols
-        LowerValue = [None] * numcols
-
-        for i in range(0, numcols):
-            UpperValue[i] = max(song[2*i], song[2*i+1])
-            LowerValue[i] = min(song[2*i], song[2*i+1])
+        numbox.append((np.absolute(song[:-1] - song[1:])).sum() + lenY)
+    
+        if((lenY % 2) != 0): #double boxsize, half max and min
+            uppervalues = (song[:-1].reshape(-1, 2)).max(axis=1)
+            lowervalues = (song[:-1].reshape(-1, 2)).min(axis=1)
+        else:
+            uppervalues = (song.reshape(-1, 2)).max(axis=1)
+            lowervalues = (song.reshape(-1, 2)).min(axis=1)
 
         maxScale = int(np.floor(np.log(lenY) / np.log(2)))
-
         for scale in range(1, maxScale):
-            dummy = 0
             blocksize.append(blocksize[scale-1]*2)
-            for i in range(0, numcols-1):
-                dummy += UpperValue[i] - LowerValue[i] + 1
-                if UpperValue[i] < LowerValue[i+1]:
-                    dummy += LowerValue[i+1] - UpperValue[i]
-                if LowerValue[i] > UpperValue[i+1]:
-                    dummy += LowerValue[i] - UpperValue[i+1]
+
+            numcols = len(uppervalues)
+            dummy = (uppervalues - lowervalues).sum() + numcols
+
+            rising = np.less(uppervalues[:-1], lowervalues[1:])
+            dummy += ((lowervalues[1:] - uppervalues[:-1]) * rising).sum() #sum where signal is rising
+
+            falling = np.greater(lowervalues[:-1], uppervalues[1:])
+            dummy += ((lowervalues[:-1] - uppervalues[1:]) * falling).sum() #sum where signal is falling
             
             numbox.append(dummy/blocksize[scale])
-            numcols = int(numcols / 2)
-            for i in range (0, numcols):
-                UpperValue[i] = max(UpperValue[2*i], UpperValue[2*i+1])
-                LowerValue[i] = min(LowerValue[2*i], LowerValue[2*i+1])
+
+            if((numcols % 2) != 0): #double boxsize, half max and min
+                uppervalues = (uppervalues[:-1].reshape(-1, 2)).max(axis=1)
+                lowervalues = (lowervalues[:-1].reshape(-1, 2)).min(axis=1)
+            else:
+                uppervalues = (uppervalues.reshape(-1, 2)).max(axis=1)
+                lowervalues = (lowervalues.reshape(-1, 2)).min(axis=1)
 
         N = np.log(numbox)
         R = np.log(1/np.array(blocksize))
-        m = np.linalg.lstsq(R[:,None],N, rcond=None)
+        m = np.linalg.lstsq(R[:,None],N, rcond=None) #
 
         avg = np.average(entropy)
         std = np.std(entropy)
         mxe = np.max(entropy)
         mne = np.min(entropy)
+        entdif = entropy[:-1] - entropy[1:]
+        med = max(entdif.min(), entdif.max(), key=abs)
         frd = m[0][0]
 
         return np.array([avg, std, mxe, mne, med, frd])
