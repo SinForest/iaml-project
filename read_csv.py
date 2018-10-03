@@ -57,12 +57,12 @@ if __name__ == "__main__":
             for k2, v2 in v1.items():
                 print(f"{k1}:{k2} => {v2}")
     
-    for v in tqdm(res.values()):
-        op = subprocess.run(["mp3info", "-p '%S'", os.path.join(MP3_PATH, v['path'])], capture_output=True)
-        new = int(float(eval(op.stdout))) # please don't kill me for this hack
-        if abs(int(v['track']['duration']) - new) > 2:
-            tqdm.write(f"{v['path']}: {v['track']['duration']}=>{new}")
-        v['track']['duration'] = str(new)
+#    for v in tqdm(res.values()):
+#        op = subprocess.run(["mp3info", "-p '%S'", os.path.join(MP3_PATH, v['path'])], capture_output=True)
+#        new = int(float(eval(op.stdout))) # please don't kill me for this hack
+#        if abs(int(v['track']['duration']) - new) > 2:
+#            tqdm.write(f"{v['path']}: {v['track']['duration']}=>{new}")
+#        v['track']['duration'] = str(new)
             
 
     pickle.dump(res, open(PICKLE_PATH, "wb"))

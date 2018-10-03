@@ -1,0 +1,11 @@
+# Ignore everything
+/*
+
+# But not these files...
+!.gitignore
+!report.tex
+!literature.bib
+
+# don't ignore subdirectories, we need those
+!images
+!content

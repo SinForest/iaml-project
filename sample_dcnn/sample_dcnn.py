@@ -18,8 +18,8 @@ from sample_dcnn_model import Model
 sys.path.append("../")
 from dataset import SoundfileDataset
 
-BATCH_SIZE  = 10
-N_PROC = 0
+BATCH_SIZE  = 8
+N_PROC = 4
 num_epochs  = 1
 CUDA_ON     = False
 SEGMENTS        = 10
@@ -27,8 +27,8 @@ FILTER_LENGTH   = 3
 DEPTH           = 9
 SAMPLES         = (FILTER_LENGTH ** (DEPTH+1))    
 
-#METADATA_PATH   = "../all_metadata.p"
-METADATA_PATH   = "../metadata.ln/tracks.csv"
+METADATA_PATH   = "../all_metadata.p"
+#METADATA_PATH   = "../metadata.ln/tracks.csv"
 DATASET_PATH    = "../dataset.ln"
 
 def find_device():
@@ -54,10 +54,11 @@ def main():
     optimizer = optim.RMSprop(model.parameters())
     criterion = nn.CrossEntropyLoss()
     
+   
     print('=> begin training <=')
     for epoch in range(0, num_epochs):
     
-        dataloader  = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=N_PROC, drop_last=True)
+        dataloader  = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=N_PROC, drop_last=True)
         abs_prec = 0
         
         
