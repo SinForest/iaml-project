@@ -11,8 +11,9 @@ from dataset import SoundfileDataset
 import operator
 import sys, os
 
-num_epochs  = 10
-batch_s     = 2
+num_epochs  = 15
+batch_s     = 16
+seg_s       = 30
 learn_r     = 0.001
 log_percent = 0.01
 CUDA_ON     = True
@@ -21,13 +22,9 @@ SHUFFLE_ON  = False
 DATA_PATH   = "./all_metadata.p"
 MODEL_PATH  = "../models/"
 
-dataset = SoundfileDataset(path=DATA_PATH, seg_size=2, hotvec=False, cut_data=True, verbose=False, out_type='entr')
+dataset = SoundfileDataset(path=DATA_PATH, seg_size=seg_s, hotvec=False, cut_data=True, verbose=False, out_type='entr')
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_s, shuffle=SHUFFLE_ON, num_workers=6)
 log_interval = np.ceil((len(dataloader.dataset) * log_percent) / batch_s)
-
-
-""" for batch_id, (data, target) in enumerate(dataloader):
-    print(batch_id, " ", data, dataset.data[batch_id]) """
 
 print(dataset.n_classes)
 
@@ -86,20 +83,21 @@ def train(epoch):
         total_loss += loss.item()
         total_size += data.size(0)
 
-        accur = (torch.max(output, 1)[1] == target).sum()
+        accur = (torch.argmax(output, dim=1) == target).sum()
         accuracy += accur 
 
         loss.backward()
         optimizer.step()
         
-        #if batch_id % log_interval == 0:
-        print('Train Epoch: {} [{:>5d}/{:> 5d} ({:>2.0f}%)]\tCurrent loss: {:.6f}\t Current accuracy: {:.2f}%'.format(
-        epoch, total_size, len(dataloader.dataset), 100. * batch_id / len(dataloader), loss.item()/data.size(0), accur/batch_s))
+        if batch_id % log_interval == 0:
+            print('Train Epoch: {} [{:>5d}/{:> 5d} ({:>2.0f}%)]\tCurrent loss: {:.6f}\t Current accuracy: {:.2f}'.format(
+            epoch, total_size, len(dataloader.dataset), 100. * batch_id / len(dataloader), loss.item() / data.size(0), float(accur) / float(batch_s)))
 
-    print('Train Epoch: {}, Entropy average loss: {:.6f}, Entropy average accuracy: {:.2f}%'.format(
-            epoch, total_loss / total_size, accuracy/ total_size))
+    total_acc = float(accuracy) / float(total_size)
+    print('Train Epoch: {}, Entropy average loss: {:.6f}, Entropy average accuracy: {:.2f}'.format(
+            epoch, total_loss / total_size, total_acc))
     
-    return (total_loss/total_size ,accuracy / total_size)
+    return (total_loss/total_size , total_acc)
 
 loss_list = []
 acc_list  = []
