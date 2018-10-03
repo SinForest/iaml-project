@@ -1,257 +1,29 @@
 % Encoding: UTF-8
 
-@InProceedings{Schneider2004,
-  author   = {Kevin Schneider and Carl Gutwin and Reagan Penner and David Paquette},
-  title    = {Mining a Software Developer’s Local Interaction History},
-  year     = {2004},
-  abstract = {Although shared software repositories are commonly
-used during software development, it is typical that a soft-
-ware developer browses and edits a local snapshot of the
-software under development. Developers periodically check
-their changes into the software repository; however, their
-interaction with the local copy is not recorded. Local in-
-teraction histories are a valuable source of information and
-should be considered when mining software repositories.
-In this paper we discuss the benefits of analyzing local
-interaction histories and present a technique and prototype
-implementation for their capture and analysis. As well, we
-discuss the implications of local interaction histories and
-the infrastructure of software repositories.},
-  file     = {:closely related/Mining a Software Developers Local Interaction History.pdf:PDF},
-}
-
-@InProceedings{El-Ramly2004,
-  author   = {Mohammad El-Ramly and Eleni Stroulia},
-  title    = {Mining Software Usage Data},
-  year     = {2004},
-  abstract = {Many software systems collect or can be instrumented
-to collect data about how users use them, i.e., system-user
-interaction data. Such data can be of great value for
-program unde
-rstanding and reengineering purposes. In
-this paper we demon
-strate that sequential data mining
-methods can be applied to discover interesting patterns of
-user activities from system-user interaction traces. In
-particular, we developed a process for discovering a
-special type of sequential patterns, called interaction
-patterns. These are sequences of events with noise, in the
-form of spurious events that may occur anywhere in a
-pattern  instance.  In  our  case  studies,  we  applied
-interaction pattern mining to systems with considerably
-different forms of interaction: Web-based systems and
-legacy systems. We used the discovered patterns for user
-interface reengineering, and personalization. The method
-is promising and generalizable to other systems with
-different forms of interaction.},
-  file     = {:loosely related/Mining Software Usage Data.pdf:PDF},
-}
-
-@InProceedings{Parnin2006,
-  author   = {Chris Parnin and Carsten G{\"o}rg and Spencer Rugaber},
-  title    = {Enriching Revision History with Interactions},
-  year     = {2006},
-  abstract = {Revision history provides a rich source of information to improve
-the understanding of changes made to programs, but it yields only
-limited insight into how these changes occurred. We explore an ad-
-ditional source of information – program viewing and editing his-
-tory – where all historical artifacts associated with the program are
-included.  In particular, we suggest augmenting revision histories
-with the interaction history of programmers.  Using this additional
-information source enables the development of several interesting
-applications including an influence-recommendation system and a
-task-mining  system.   We present  some results from a case  study
-in which interaction histories from professional programmers were
-obtained and analyzed.},
-  file     = {:loosely related/Enriching Revision History with Interactions.pdf:PDF},
-}
-
-@InProceedings{Robbes2013,
-  author    = {Romain Robbes and David R{\"o}thlisberger},
-  title     = {Using Developer Interaction Data to Compare Expertise Metrics},
-  year      = {2013},
-  publisher = {IEEE},
-  abstract  = {The  expertise  of  a  software  developer  is  said  to  be
-a  crucial  factor  for  the  development  time  required  to  complete
-a  task.  Even  if  this  hypothesis  is  intuitive,  research  has  not  yet
-quantified the effect of developer expertise on development time.
-A related problem is that the design space for expertise metrics is
-large;  out  of  the  various  automated  expertise  metrics  proposed,
-we  do  not  know  which  metric  most  reliably  captures  expertise.
-What  prevents  a  proper  evaluation  of  expertise  metrics  and
-their  relation  with  development  time  is  the  lack  of  data  on
-development  tasks,  such  as  their  precise  duration.  Fortunately,
-this  data  is  starting  to  become  available  in  the  form  of  growing
-developer  interaction  repositories.  We  show  that  applying  MSR
-techniques to these developer interaction repositories gives us the
-necessary  tools  to  perform  such  an  evaluation.},
-  file      = {:closely related/Using Developer Interaction Data to Compare Expertise Metrics.pdf:PDF},
-}
-
-@InProceedings{Zanjani2014,
-  author   = {Motahareh Bahrami Zanjani and George Swartzendruber and Huzefa Kagdi},
-  title    = {Impact Analysis of Change Requests on Source Code Based on Interaction and Commit Histories},
-  year     = {2014},
-  abstract = {The paper presents an approach to perform impact analysis
-(IA) of an incoming change request on source code. The
-approach is based on a combination of interaction (e.g., My-
-lyn) and commit (e.g., CVS) histories. The source code enti-
-ties (i.e., files and methods) that were interacted or changed
-in the resolution of past change requests (e.g., bug fixes)
-were used. Information retrieval, machine learning, and
-lightweight source code analysis techniques were employed
-to form a corpus from these source code entities. Addition-
-ally, the corpus was augmented with the textual descriptions
-of the previously resolved change requests and their associ-
-ated commit messages. Given a textual description of a
-change request, this corpus is queried to obtain a ranked list
-of relevant source code entities that are most likely change
-prone. Such an approach that combines information from
-interactions and commits for IA at the change request level
-was not previously investigated. Furthermore, the approach
-requires only the entities that were interacted and/or com-
-mitted in the past, which differs from the previous solutions
-that require indexing of a complete snapshot (e.g., a release).
-An empirical study on 3272 interactions and 5093 com-
-mits from Mylyn, an open source task management tool,
-was conducted. The results show that the combined ap-
-proach outperforms an individual approach based on com-
-mits. Moreover, it also outperformed an approach based on
-indexing a single, complete snapshot of a software system.},
-}
-
-@InProceedings{Zanjani2015,
-  author    = {Motahareh Bahrami Zanjani and Huzefa Kagdi and Christian Bird},
-  title     = {Using Developer-Interaction Trails to Triage Change Requests},
-  booktitle = {2015 {IEEE}/{ACM} 12th Working Conference on Mining Software Repositories},
-  year      = {2015},
-  month     = {may},
-  publisher = {Institute of Electrical and Electronics Engineers ({IEEE})},
-  abstract  = {The paper presents an approach, namely
-iHDev
-,
-to recommend developers who are most likely to implement
-incoming change requests. The basic premise of
-iHDev
-is that
-the developers who interacted with the source code relevant to
-a given change request are most likely to best assist with its
-resolution. A machine-learning technique is first used to locate
-source code entities relevant to the textual description of a given
-change request.
-iHDev
-then mines interaction trails (i.e.,
-Mylyn
-sessions) associated with these source code entities to recommend
-a ranked list of developers.
-iHDev
-integrates the interaction trails
-in a unique way to perform its task, which was not investigated
-previously.
-An empirical study on open source systems
-Mylyn
-and
-Eclipse
-Project
-was conducted to assess the effectiveness of
-iHDev
-.A
-number of change requests were used in the evaluated bench-
-mark. Recall for top one to five recommended developers and
-Mean Reciprocal Rank (MRR) values are reported. Furthermore,
-a comparative study with two previous approaches that use
-commit histories and/or the source code authorship information
-for developer recommendation was performed. Results show
-that
-iHDev
-could provide a recall gain of up to 127.27% with
-equivalent or improved MRR values by up to 112.5%.},
-  doi       = {10.1109/msr.2015.16},
-  file      = {:loosely related/Using Developer-Interaction Trails to Triage
-Change Requests.pdf:PDF},
-  url       = {http://dx.doi.org/10.1109/MSR.2015.16},
-}
-
-@InProceedings{Rastkar2009,
-  author    = {Sarah Rastkar and Gail C. Murphy},
-  title     = {OnWhat Basis to Recommend: Changesets or Interactions},
-  year      = {2009},
-  publisher = {IEEE},
-  abstract  = {Different flavours of recommendation systems have been proposed to help software developers perform software evolution tasks. A number of these recommendation systems are based on changesets. When changeset information is used, recommendations are based on only the end result of the activity undertaken to complete a task. In this paper, we report on an investigation that compared how recommendations based on changesets compare to recommendations based on interactions collected as a programmer performed the task that resulted in a changeset. To provide a common basis for the comparison, our investigation considered how bug reports considered similar based on changeset information compare to bug reports considered similar based on interaction information. We found that there is no direct relationship between the bug reports found similar with the different methods, suggesting that each comparison methods captures a different aspect of the problem.},
-  file      = {:loosely related/On What Basis to Recommend\: Changesets or Interactions?.pdf:PDF},
-}
-
-@Misc{MYL,
-  title = {Mylyn Homepage},
-  url   = {http://www.eclipse.org/mylyn/},
-}
-
-@Misc{ECL,
-  title = {Eclipse Homepage},
-  url   = {http://www.eclipse.org/},
-}
-
-@Misc{JIR,
-  title = {Jira Homepage},
-  url   = {https://www.atlassian.com/software/jira},
-}
-
-@Misc{JIG,
-  title = {Git Integration for JIRA Homepage},
-  url   = {https://bigbrassband.com/git-for-jira.html},
-}
-
-@Misc{EGI,
-  title = {EGit Homepage},
-  url   = {http://www.eclipse.org/egit/},
-}
-
-@Book{Huang2012,
-  title     = {Software and Systems Traceability},
-  publisher = {Springer-Verlag London},
-  year      = {2012},
-  editor    = {Jane Huang, Orlena Gotel, Andrea Zisman},
-  doi       = {10.1007/978-1-4471-2239-5},
-}
-
-@InProceedings{Huebner2017,
-  author    = {Paul H{\"u}bner and Barbara Peach},
-  title     = {Using Interaction Data for Continuous Creation of Trace Links between Source Code and Requirements in Issue Tracking Systems},
-  booktitle = {Proceedings of the 23nd International Working Conference on Requirements Engineering: Foundation for Software Quality, Feb 2017},
+@article{DBLP:journals/corr/LeePKN17,
+  author    = {Jongpil Lee and
+               Jiyoung Park and
+               Keunhyoung Luke Kim and
+               Juhan Nam},
+  title     = {Sample-level Deep Convolutional Neural Networks for Music Auto-tagging
+               Using Raw Waveforms},
+  journal   = {CoRR},
+  volume    = {abs/1703.01789},
   year      = {2017},
+  url       = {http://arxiv.org/abs/1703.01789},
+  archivePrefix = {arXiv},
+  eprint    = {1703.01789},
+  timestamp = {Mon, 13 Aug 2018 16:48:36 +0200},
+  biburl    = {https://dblp.org/rec/bib/journals/corr/LeePKN17},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
-@Misc{JRQ,
-  title = {Using JIRA for Requirements Management},
-  url   = {https://confluence.atlassian.com/jirakb/using-jira-for-requirements-management-193300521.html},
-}
-
-@InProceedings{Tulsian2014,
-  author = {Varun Tulsian, Aditya Kanade, Rahul Kumar, Akash Lal, Aditya V. Nori},
-  title  = {MUX: algorithm selection for software model checkers},
-  year   = {2014},
-}
-
-@InProceedings{Guo2014,
-  author = {Lisong Guo, Julia L. Lawall, Gilles Muller},
-  title  = {Oops! where did that code snippet come from?},
-  year   = {2014},
-}
-
-@InProceedings{Maalej2010,
-  author = {Walid Maalej, Hans-J{\"o}rg Happel},
-  title  = {Can development work describe itself?},
-  year   = {2010},
-}
-
-@Misc{MSR,
-  title = {Mining Software Repositories conference archives},
-  url   = {http://dblp.uni-trier.de/db/conf/msr/},
-}
-
-@Misc{AMC,
-  title = {Atlassian IDE Connectors},
-  url   = {https://developer.atlassian.com/blog/2015/06/discontinuing-ide-connectors-support/},
+@inproceedings{fma_dataset,
+  title = {FMA: A Dataset for Music Analysis},
+  author = {Defferrard, Micha\"el and Benzi, Kirell and Vandergheynst, Pierre and Bresson, Xavier},
+  booktitle = {18th International Society for Music Information Retrieval Conference},
+  year = {2017},
+  url = {https://arxiv.org/abs/1612.01840},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
