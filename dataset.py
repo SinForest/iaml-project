@@ -127,7 +127,7 @@ class SoundfileDataset(Dataset):
 
         N = np.log(numbox)
         R = np.log(1/np.array(blocksize))
-        m = np.linalg.lstsq(R[:,None],N, rcond=None) #
+        m = np.linalg.lstsq(R[:,None],N, rcond=None) #slope of curve is fractal dimension
 
         avg = np.average(entropy)
         std = np.std(entropy)
