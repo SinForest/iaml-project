@@ -86,3 +86,4 @@ for epoch in count(1):
     prec = abs_prec / (BATCH_SIZE * len(vloader))
     tqdm.write(f"{_CG}VALID[{epoch}]{_XX}: r.prec: {prec * 100:>2.2f}; loss: {sum(losses)/len(losses):>2.3f}")
     sched.step(prec)
+    torch.save(model, f"./model_E{i}_P{int(prec * 1000)}.t")
