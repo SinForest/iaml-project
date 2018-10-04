@@ -11,7 +11,7 @@ np.seterr(all='ignore')
 
 def calc_entropy(path):
 
-    song, sr = librosa.load(path, mono=True)
+    song, sr = librosa.load(path, mono=True, duration=120)
     fsize = 1024
     ssize = 512
     
