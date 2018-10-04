@@ -33,11 +33,12 @@ tloader = DataLoader(tset, batch_size=BATCH_SIZE, shuffle=True, num_workers=N_PR
 vloader = DataLoader(vset, batch_size=BATCH_SIZE, shuffle=False, num_workers=N_PROC, drop_last=True)
 
 print("### building model ###")
-model = Model(*dset[0][0].shape, dset.n_classes)
+model = Model(*dset[0][0].shape, dset.n_classes, verbose=True)
 if CUDA_DEVICE > -1:
     model.cuda()
 crit  = torch.nn.CrossEntropyLoss()
 opti  = torch.optim.RMSprop(model.parameters())
+sched = torch.optim.lr_scheduler.ReduceLROnPlateau(opti, patience=3, factor=0.33, verbose=True, mode='max')
 
 print("### starting train loop ###")
 
@@ -64,11 +65,11 @@ for epoch in count(1):
         abs_prec += (pred.max(1)[1] == y).sum().item()
 
         if i % LOG_COUNT == 0:
-            tqdm.write(f"{_CB}B[{i:>4}/{len(tloader)}]{_XX}: r.prec: {(abs_prec * 100) / (len(X)*i):>2.2f}; loss: {sum(losses)/len(losses):>2.3f}")
+            tqdm.write(f"{_CB}B[{i:>4}/{len(tloader)}]{_XX}: r.prec: {(abs_prec * 100) / (BATCH_SIZE*i):>2.2f}; loss: {sum(losses)/len(losses):>2.3f}")
         
         
     
-    prec = abs_prec / (len(X) * len(tloader))
+    prec = abs_prec / (BATCH_SIZE * len(tloader))
     tqdm.write(f"{_CR}EPOCH[{epoch}]{_XX}: r.prec: {prec * 100:>2.2f}; loss: {sum(losses)/len(losses):>2.3f}")
 
     abs_prec = 0
@@ -82,5 +83,6 @@ for epoch in count(1):
             pred = model(X)
         abs_prec += (pred.max(1)[1] == y).sum().item()
     
+    prec = abs_prec / (BATCH_SIZE * len(vloader))
     tqdm.write(f"{_CG}VALID[{epoch}]{_XX}: r.prec: {prec * 100:>2.2f}; loss: {sum(losses)/len(losses):>2.3f}")
-
+    sched.step(prec)
