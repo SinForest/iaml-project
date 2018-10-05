@@ -45,12 +45,12 @@ def find_device():
     
 
 def main():
-    sys.stdout = open('output.txt', 'w')
+    #sys.stdout = open('output.txt', 'w')
 
     device = find_device()
     
     print('=> loading dataset <=')
-    dataset = SoundfileDataset(METADATA_PATH, DATASET_PATH, cut_data=False, out_type='sample')
+    dataset = SoundfileDataset(METADATA_PATH, DATASET_PATH, seg_size=3, cut_data=True, out_type='sample')
     print('=> dataset loaded <=')
     model = Model(SEGMENTS, SAMPLES, dataset.n_classes)
     model = model.to(device)    
@@ -98,7 +98,6 @@ def main():
 
         prec = abs_prec / (len(train_loader) * BATCH_SIZE)
         tqdm.write(f"train precision: {prec*100:.2f}%")
-        print(f"train precision: {prec*100:.2f}%")
         
         # validate
         running_loss = 0.0
@@ -119,7 +118,6 @@ def main():
 
         prec = abs_prec / (len(validation_loader) * BATCH_SIZE)
         tqdm.write(f"validation precision: {prec*100:.2f}%")
-        print(f"validation precision: {prec*100:.2f}%")
         #tqdm.write(f"validation running loss: {running_loss:.4f}%")
         scheduler.step(running_loss)
 
