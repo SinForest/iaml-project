@@ -11,7 +11,7 @@ np.seterr(all='ignore')
 
 def calc_entropy(path):
 
-    song, sr = librosa.load(path, mono=True, duration=120)
+    song, sr = librosa.load(path, mono=True, duration=180)
     fsize = 1024
     ssize = 512
     
@@ -93,7 +93,7 @@ def main():
     print(len(target))
     del d
 
-    pool = multiprocessing.Pool()
+    pool = multiprocessing.Pool(28)
     imap = pool.imap(calc_entropy, l)
     l = [x for x in tqdm(imap, total=len(l))]
     print(len(l))
