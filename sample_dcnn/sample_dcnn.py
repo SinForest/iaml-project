@@ -45,7 +45,7 @@ def find_device():
     
 
 def main():
-    #sys.stdout = open('output.txt', 'w')
+    sys.stdout = open('output.txt', 'w')
 
     device = find_device()
     
