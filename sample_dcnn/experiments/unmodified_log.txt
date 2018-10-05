@@ -1,0 +1,109 @@
+Model(
+  (conv): Sequential(
+    (0): Conv1d(10, 128, kernel_size=(3,), stride=(3,), padding=(1,))
+    (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Conv1d(128, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+    (4): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): ReLU()
+    (6): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (7): Conv1d(128, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+    (8): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (9): ReLU()
+    (10): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (11): Conv1d(128, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+    (12): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (13): ReLU()
+    (14): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (15): Conv1d(256, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+    (16): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (17): ReLU()
+    (18): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (19): Conv1d(256, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+    (20): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (21): ReLU()
+    (22): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (23): Conv1d(256, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+    (24): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (25): ReLU()
+    (26): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (27): Conv1d(256, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+    (28): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (29): ReLU()
+    (30): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (31): Conv1d(256, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+    (32): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (33): ReLU()
+    (34): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (35): Conv1d(256, 512, kernel_size=(3,), stride=(1,), padding=(1,))
+    (36): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (37): ReLU()
+    (38): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (39): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+    (40): Dropout(p=0.5)
+  )
+  (fc): Sequential(
+    (0): Linear(in_features=512, out_features=8, bias=True)
+    (1): Sigmoid()
+  )
+)
+
+
+
+(iaml) twuensche@Tubuntu:~/git/iaml/sample_dcnn$ python sample_dcnn.py 
+=> loading dataset <=
+removed 98574/106574 non-existing/too short items
+build class set: 100%|█████████████████| 8000/8000 [00:00<00:00, 1586572.98it/s]
+build dataset: 100%|████████████████████| 8000/8000 [00:00<00:00, 718525.71it/s]
+=> dataset loaded <=
+=> begin training <=
+training epoch 0: 100%|███████████████████████| 400/400 [28:30<00:00,  2.95s/it]
+train precision: 26.06%
+validation epoch 0: 100%|█████████████████████| 100/100 [07:52<00:00,  5.77s/it]
+validation precision: 25.62%
+training epoch 1: 100%|███████████████████████| 400/400 [31:21<00:00,  1.00s/it]
+train precision: 30.11%
+validation epoch 1: 100%|█████████████████████| 100/100 [07:40<00:00,  4.61s/it]
+validation precision: 33.31%
+training epoch 2: 100%|███████████████████████| 400/400 [31:31<00:00,  1.59it/s]
+train precision: 33.06%
+validation epoch 2: 100%|█████████████████████| 100/100 [07:42<00:00,  4.62s/it]
+validation precision: 30.06%
+training epoch 3: 100%|███████████████████████| 400/400 [31:16<00:00,  1.50s/it]
+train precision: 33.41%
+validation epoch 3: 100%|█████████████████████| 100/100 [07:40<00:00,  3.07s/it]
+validation precision: 34.56%
+training epoch 4: 100%|███████████████████████| 400/400 [30:57<00:00,  1.02s/it]
+train precision: 35.55%
+validation epoch 4: 100%|█████████████████████| 100/100 [07:39<00:00,  4.59s/it]
+validation precision: 37.69%
+training epoch 5: 100%|███████████████████████| 400/400 [31:11<00:00,  1.02s/it]
+train precision: 36.08%
+validation epoch 5: 100%|█████████████████████| 100/100 [07:41<00:00,  4.62s/it]
+validation precision: 39.00%
+training epoch 6: 100%|███████████████████████| 400/400 [30:26<00:00,  1.83s/it]
+train precision: 37.38%
+validation epoch 6: 100%|█████████████████████| 100/100 [07:43<00:00,  4.63s/it]
+validation precision: 29.69%
+training epoch 7: 100%|███████████████████████| 400/400 [31:44<00:00,  1.08s/it]
+train precision: 39.03%
+validation epoch 7: 100%|█████████████████████| 100/100 [07:33<00:00,  4.54s/it]
+validation precision: 35.44%
+training epoch 8: 100%|███████████████████████| 400/400 [30:58<00:00,  2.55s/it]
+train precision: 39.27%
+validation epoch 8: 100%|█████████████████████| 100/100 [07:39<00:00,  3.09s/it]
+validation precision: 36.06%
+training epoch 9: 100%|███████████████████████| 400/400 [31:08<00:00,  1.30s/it]
+train precision: 39.83%
+validation epoch 9: 100%|█████████████████████| 100/100 [07:47<00:00,  4.01s/it]
+validation precision: 38.44%
+training epoch 10: 100%|██████████████████████| 400/400 [28:45<00:00,  1.18it/s]
+train precision: 41.64%
+validation epoch 10: 100%|████████████████████| 100/100 [07:26<00:00,  4.47s/it]
+validation precision: 33.81%
+training epoch 11: 100%|██████████████████████| 400/400 [29:01<00:00,  2.30s/it]
+train precision: 41.84%
+validation epoch 11: 100%|████████████████████| 100/100 [07:38<00:00,  3.74s/it]
+validation precision: 32.62%
+
+

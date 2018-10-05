@@ -1,0 +1,117 @@
+Model(
+  (conv): Sequential(
+    (0): Conv1d(10, 16, kernel_size=(3,), stride=(3,), padding=(1,))
+    (1): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Conv1d(16, 32, kernel_size=(3,), stride=(1,), padding=(1,))
+    (4): BatchNorm1d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): ReLU()
+    (6): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (7): Conv1d(32, 32, kernel_size=(3,), stride=(1,), padding=(1,))
+    (8): BatchNorm1d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (9): ReLU()
+    (10): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (11): Conv1d(32, 64, kernel_size=(3,), stride=(1,), padding=(1,))
+    (12): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (13): ReLU()
+    (14): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (15): Conv1d(64, 64, kernel_size=(3,), stride=(1,), padding=(1,))
+    (16): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (17): ReLU()
+    (18): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (19): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+    (20): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (21): ReLU()
+    (22): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (23): Conv1d(128, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+    (24): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (25): ReLU()
+    (26): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (27): Conv1d(128, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+    (28): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (29): ReLU()
+    (30): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (31): Conv1d(256, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+    (32): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (33): ReLU()
+    (34): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (35): Conv1d(256, 512, kernel_size=(3,), stride=(1,), padding=(1,))
+    (36): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (37): ReLU()
+    (38): MaxPool1d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
+    (39): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+    (40): Dropout(p=0.5)
+  )
+  (fc): Sequential(
+    (0): Linear(in_features=512, out_features=8, bias=True)
+    (1): Sigmoid()
+  )
+)
+
+
+
+=> begin training <=
+training epoch 0: 100%|███████████████████████| 400/400 [30:03<00:00,  4.51s/it]
+train precision: 24.86%
+validation epoch 0: 100%|█████████████████████| 100/100 [07:21<00:00,  4.82s/it]
+validation precision: 32.44%
+validation running loss: 186.6392%
+training epoch 1: 100%|███████████████████████| 400/400 [29:46<00:00,  3.48s/it]
+train precision: 30.50%
+validation epoch 1: 100%|█████████████████████| 100/100 [07:33<00:00,  4.54s/it]
+validation precision: 31.31%
+validation running loss: 187.0757%
+Epoch     1: reducing learning rate of group 0 to 5.0000e-03.
+training epoch 2: 100%|███████████████████████| 400/400 [30:40<00:00,  4.60s/it]
+train precision: 33.00%
+validation epoch 2: 100%|█████████████████████| 100/100 [07:35<00:00,  4.55s/it]
+validation precision: 33.81%
+validation running loss: 183.7456%
+training epoch 3: 100%|███████████████████████| 400/400 [31:20<00:00,  2.85s/it]
+train precision: 35.27%
+validation epoch 3: 100%|█████████████████████| 100/100 [07:25<00:00,  4.45s/it]
+validation precision: 36.62%
+validation running loss: 182.6093%
+training epoch 4: 100%|███████████████████████| 400/400 [30:23<00:00,  5.28s/it]
+train precision: 36.34%
+validation epoch 4: 100%|█████████████████████| 100/100 [07:41<00:00,  4.63s/it]
+validation precision: 37.56%
+validation running loss: 180.2423%
+training epoch 5: 100%|███████████████████████| 400/400 [30:57<00:00,  4.64s/it]
+train precision: 38.27%
+validation epoch 5: 100%|█████████████████████| 100/100 [07:33<00:00,  4.54s/it]
+validation precision: 35.06%
+validation running loss: 181.8564%
+Epoch     5: reducing learning rate of group 0 to 2.5000e-03.
+training epoch 6: 100%|███████████████████████| 400/400 [32:19<00:00,  4.85s/it]
+train precision: 39.53%
+validation epoch 6: 100%|█████████████████████| 100/100 [07:40<00:00,  4.61s/it]
+validation precision: 38.94%
+validation running loss: 178.7586%
+training epoch 7: 100%|███████████████████████| 400/400 [31:48<00:00,  2.95s/it]
+train precision: 40.80%
+validation epoch 7: 100%|█████████████████████| 100/100 [07:46<00:00,  2.27s/it]
+validation precision: 40.44%
+validation running loss: 178.4152%
+training epoch 8: 100%|███████████████████████| 400/400 [30:41<00:00,  4.60s/it]
+train precision: 43.00%
+validation epoch 8: 100%|█████████████████████| 100/100 [07:37<00:00,  4.58s/it]
+validation precision: 38.88%
+validation running loss: 181.3814%
+Epoch     8: reducing learning rate of group 0 to 1.2500e-03.
+training epoch 9: 100%|███████████████████████| 400/400 [31:14<00:00,  4.69s/it]
+train precision: 43.77%
+validation epoch 9: 100%|█████████████████████| 100/100 [07:40<00:00,  4.61s/it]
+validation precision: 41.00%
+validation running loss: 177.8522%
+training epoch 10: 100%|██████████████████████| 400/400 [31:15<00:00,  4.69s/it]
+train precision: 44.98%
+validation epoch 10: 100%|████████████████████| 100/100 [07:34<00:00,  4.54s/it]
+validation precision: 41.50%
+validation running loss: 177.6216%
+training epoch 11: 100%|██████████████████████| 400/400 [31:53<00:00,  4.78s/it]
+train precision: 46.64%
+validation epoch 11: 100%|████████████████████| 100/100 [07:34<00:00,  4.54s/it]
+validation precision: 40.19%
+validation running loss: 178.3767%
+Epoch    11: reducing learning rate of group 0 to 6.2500e-04.
