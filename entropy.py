@@ -8,43 +8,46 @@ import torch.optim as optim
 from torch.autograd import Variable as Var
 from torch import Tensor as Ten
 from dataset import SoundfileDataset
+from entrset import EntropyDataset
 import operator
 import sys, os
 
-num_epochs  = 15
-batch_s     = 2
+num_epochs  = 100
+batch_s     = 2**12
 seg_s       = 2
 learn_r     = 0.001
-log_percent = 0.01
+s_factor    = 0.5
+log_percent = 0.25
 CUDA_ON     = True
-SHUFFLE_ON  = False
+SHUFFLE_ON  = True
 
 DATA_PATH   = "./all_metadata.p"
 MODEL_PATH  = "../models/"
 
-dataset = SoundfileDataset(path=DATA_PATH, seg_size=seg_s, hotvec=False, cut_data=True, verbose=False, out_type='entr')
+""" dataset = SoundfileDataset(path=DATA_PATH, seg_size=seg_s, hotvec=False, cut_data=True, verbose=False, out_type='entr')
 trainsamp, valsamp = dataset.get_split(sampler=False)
 trainloader = torch.utils.data.DataLoader(trainsamp, batch_size=batch_s, shuffle=SHUFFLE_ON, num_workers=6)
-valloader   = torch.utils.data.DataLoader(valsamp, batch_size=batch_s, shuffle=SHUFFLE_ON, num_workers=6)
+valloader   = torch.utils.data.DataLoader(valsamp, batch_size=batch_s, shuffle=SHUFFLE_ON, num_workers=6) """
+dataset = EntropyDataset()
+trainsamp, valsamp = dataset.getsplit()
+trainloader = torch.utils.data.DataLoader(trainsamp, batch_size=batch_s, shuffle=SHUFFLE_ON, num_workers=4)
+valloader   = torch.utils.data.DataLoader(valsamp, batch_size=batch_s, shuffle=False, num_workers=4)
 log_interval = np.ceil((len(trainloader.dataset) * log_percent) / batch_s)
 
 print(dataset.n_classes)
 
+n_con = 4096
 model = nn.Sequential(
-            nn.Linear(6, 2048),
-            nn.PReLU(num_parameters=2048),
-            nn.BatchNorm1d(2048),
-            nn.Dropout(p=0.5),
-            nn.Linear(2048, 2048),
-            nn.PReLU(num_parameters=2048),
-            nn.BatchNorm1d(2048),
-            nn.Dropout(p=0.5),
-            nn.Linear(2048, 2048),
-            nn.PReLU(num_parameters=2048),
-            nn.BatchNorm1d(2048),
-            nn.Dropout(p=0.5),
-            nn.Linear(2048, dataset.n_classes)
-        )
+    nn.Linear(6, n_con),
+    nn.PReLU(num_parameters=n_con),
+    nn.BatchNorm1d(n_con),
+    nn.Dropout(p=0.5),
+    nn.Linear(n_con, n_con),
+    nn.PReLU(num_parameters=n_con),
+    nn.BatchNorm1d(n_con),
+    nn.Dropout(p=0.5),
+    nn.Linear(n_con, dataset.n_classes)
+)
 
 for m in model.modules():
     if isinstance(m, nn.BatchNorm1d):
@@ -57,6 +60,7 @@ for m in model.modules():
         m.bias.data.zero_()
 
 optimizer = optim.Adam(model.parameters(), lr=learn_r)
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=s_factor, patience=5, verbose=True)
 criterion = nn.CrossEntropyLoss()
 
 if CUDA_ON:
@@ -96,18 +100,44 @@ def train(epoch):
             epoch, total_size, len(trainloader.dataset), 100. * batch_id / len(trainloader), loss.item() / data.size(0), float(accur) / float(batch_s)))
 
     total_acc = float(accuracy) / float(total_size)
-    print('Train Epoch: {}, Entropy average loss: {:.6f}, Entropy average accuracy: {:.2f}'.format(
+    print('Train Epoch: {}, Entropy average loss: {:.6f}, Entropy average accuracy: {:.4f}'.format(
             epoch, total_loss / total_size, total_acc))
     
     return (total_loss/total_size , total_acc)
 
+def validate():
+    model.eval()
+    val_loss = 0
+    accur = 0
+    for data, target in valloader:
+        
+        if CUDA_ON:
+            data, target = data.cuda(), target.cuda()
+        
+        output = model(data)
+        
+        val_loss += criterion(output, target).item()
+        accur += (torch.argmax(output, dim=1) == target).sum()
+    
+    val_loss /= len(valloader.dataset)
+    accuracy = float(accur) / float(len(valloader.dataset))
+    
+    print('\nTest set: Entropy average loss: {:.6f}, average accuracy: {:.4f}'.format(val_loss, accuracy))
+    
+    return val_loss, accuracy
+
 loss_list = []
 acc_list  = []
-print("Beginning Training")
+val_loss  = []
+val_acc   = []
 for epoch in range(0, num_epochs):
     loss, acc = train(epoch)
     loss_list.append(loss)
     acc_list.append(acc)
-    state = {'state_dict':model.state_dict(), 'optim':optimizer.state_dict(), 'epoch':epoch, 'train_loss':loss_list, 'accuracy': acc_list}
+    val_l, val_a = validate()
+    scheduler.step(val_l)
+    val_loss.append(val_l)
+    val_acc.append(val_a)
+    state = {'state_dict':model.state_dict(), 'optim':optimizer.state_dict(), 'epoch':epoch, 'train_loss':loss_list, 'accuracy':acc_list, 'val_loss':val_loss, 'val_acc':val_acc}
     filename = "../models/entropy_{:02d}.nn".format(epoch)
     torch.save(state, filename)
