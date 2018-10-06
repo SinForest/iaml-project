@@ -122,9 +122,11 @@ In the paper, the authors experiment both on MTAD and MSD. For MTAT, increasing 
 
 After training the model for eight hours, no significant decrease in training time was found. As shown in figure \ref{fig:sample-dcnn-m3-n9-seg10-16_512-plateau_mod}, the accuracy on the validation set however grew slightly, while the training precision fell significantly. This would suggest, that our previous model was overfitting to a small degree. Therefore we will keep using the reduced number of filters on the small dataset (8000 samples), but will increase it back to full for more complex applications.
 
-
-
 \subsection{Number of segments}
+\label{subsec:segments}
+
+All models up to now have used ten segments of music, all of equal length, and averaged over the original results. We now reduce the amount of segments to one, hoping to achieve an increase in training speed without sacrificing too much accuracy.
+
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=.9\linewidth]{images/sample-dcnn-m3-n9-seg1-16_512-plateau_mod.png}
@@ -132,7 +134,29 @@ After training the model for eight hours, no significant decrease in training ti
 	\label{fig:sample-dcnn-m3-n9-seg1-16_512-plateau_mod}
 \end{figure}
 
+Figure \ref{fig:sample-dcnn-m3-n9-seg1-16_512-plateau_mod} shows, that this modification is very effective, reducing the time needed to train and evaluate one epoch on the small dataset from 43 minutes to only twelve. The reduced training time is most likely due to having the dataloader handle only three instead of 30 seconds of music. In our current system, the CPU is clearly the bottleneck and this change lightens the load, allowing the GPU to receive data quicker. Due to leaving the model training overnight, the total time spent is a bit longer than the initial eight hours. This allows for significantly more epochs, which in turn increases the validation accuracy by 5\% compared to all previous models. In the later epochs the training and validation accuracy are almost equal.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=.9\linewidth]{images/sample-dcnn-m3-n9-seg1-128_512-plateau.png}
+	\caption{Performance of the first $3^9$ model using only one segment of music instead of ten.}
+	\label{fig:sample-dcnn-m3-n9-seg1-128_512-plateau}
+\end{figure}
+
+The higher number of epochs also requires a reconsideration of the learning rate scheduler. in subsection \ref{subsec:learning_rate} we concluded that the original scheduler was too slow for our format. as the number of epochs can now realistically be quintupled, we return to the original settings, with only the number off segments reduced from 10 to one. Figure \ref{fig:sample-dcnn-m3-n9-seg1-128_512-plateau} shows, that we were right to do so: compared to the prevoius experiment, both training and validation accuracy increase by another 5\%, since the learning rate in the later epochs is not too small to prevent improvement. After epoch 46, the scheduler reduces the learning rate the fifth time, at which point Jongpil Lee, Jiyoung Park, Keunhyoung Luke Kim and Juhan Nam considered the training complete.
+
+As the original model is now outperforms the other versions, we return to the full 128-512 filters and the reduce on plateau learning rate scheduler, which reduces after three epochs with no improvement to the validation loss.
+
 \subsection{Depth and filter length}
+
+We wanted to try changing the dimensions of the model in at least one experiment. Originally, a $3^6$ model was planned, hoping to reduce the training time. Now that subsection \ref{subsec:segments} has shown, that the CPU is our bottleneck, reducing the training time is no likely. We will instead train this model to find out how much of a difference the lower number of layers makes. If the depth can be reduced without lowering the accuracy significantly, this would make the model more suitable to being used on less powerful devices after the training is complete. 
+
+To take advantage of the GPU power, which is currently going unused, we also train a deeper version. This new model uses 1+14+1 layers and a filter length and step size of 2.
 
 \section{Conclusion}
 \label{sec:conclusion}
+
+While we originally planned to train the best-performing model from the previous experiments on a server with the full dataset, this regrettably failed. The full set contains a number of files, that our dataset class was unable to load. These failures seemed to occur randomly, but frequently enough that training was not possible. As we found this problem fairly late in the project and both other team-members could use preprocessed data, we decided to use the remaining time to train the other two model using the more powerful hardware.
+
+This approach is slow to train, since it requires large inputs, which have to be reloaded in each epoch. This puts a significant burden on the CPU, even if a powerful GPU is available.
+Once the model is trained however, using it for predictions is fairly straight-forward. It can make reasonable predictions even with a small trainingset and using less than four seconds at a 22050 Hz sample rate. By making multiple predictions per song using different segments, misleading parts of a track can be overcome. Furthermore, by choosing segments at random during training, each song effectively can function as multiple different inputs samples. The lack of pre-processing also makes this method suitable to being used on less powerful devices once the model has been trained.
