@@ -72,7 +72,7 @@ for epoch in count(1):
             tqdm.write(f"{_CB}B[{i:>4}/{len(tloader)}]{_XX}: r.prec: {(abs_prec * 100) / (BATCH_SIZE*i):>2.2f}; loss: {sum(losses)/len(losses):>2.3f}")
             log[epoch][i] = {"prec": (abs_prec * 100) / (BATCH_SIZE*i), "loss": sum(losses)/len(losses)}
 
-            pickle.dump(log, open("./logs.p", "w"))
+            pickle.dump(log, open("./logs.p", "wb"))
         
         
     
@@ -94,5 +94,5 @@ for epoch in count(1):
     tqdm.write(f"{_CG}VALID[{epoch}]{_XX}: r.prec: {prec * 100:>2.2f}; loss: {sum(losses)/len(losses):>2.3f}")
     sched.step(prec)
     log[epoch]["val"] = {"prec": (abs_prec * 100) / (BATCH_SIZE*i), "loss": sum(losses)/len(losses), "sched":sched.num_bad_epochs==0 and epoch!=1}
-    pickle.dump(log, open("./logs.p", "w"))
+    pickle.dump(log, open("./logs.p", "wb"))
     torch.save(model, f"./model_E{i}_P{int(prec * 1000)}.t")
