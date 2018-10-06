@@ -95,4 +95,4 @@ for epoch in count(1):
     sched.step(prec)
     log[epoch]["val"] = {"prec": (abs_prec * 100) / (BATCH_SIZE*i), "loss": sum(losses)/len(losses), "sched":sched.num_bad_epochs==0 and epoch!=1}
     pickle.dump(log, open("./logs.p", "wb"))
-    torch.save(model, f"./model_E{i}_P{int(prec * 1000)}.t")
+    torch.save(model, f"./model_E{epoch:0>3}_P{int(prec * 1000)}.t")
