@@ -143,12 +143,11 @@ class SoundfileDataset(Dataset):
         # each run takes 2678 ms of the song
         segments = 1
         # magic numbers falling out of the paper, may need changing
-        filter_length = 3
-        depth = 9
+        filter_length = 2
+        depth = 14
                 
         sample_num = (filter_length ** (depth+1))
         
-        # not elegant, but it prevents crashes and doesn't happen often enough to influence accuracy
         if(song.size < segments * sample_num):
             missing = segments * sample_num -song.size
             filler = 2 * np.random.rand(missing).astype('f') -1
