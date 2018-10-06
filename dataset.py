@@ -29,7 +29,9 @@ class SoundfileDataset(Dataset):
         # Remove non-existent data points (e.g. b/c of smaller subset)
         tmp_len = len(d)
         if out_type == 'pre_mel':
-            d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'][:-3] + "npy")) and int(v["track"]["duration"]) > seg_size}
+            d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'][:-3] + "npy"))
+                                          and int(v["track"]["duration"]) > seg_size
+                                          and v["track"]["genre_top"] != ""}
         else:
             d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and int(v["track"]["duration"]) > seg_size}
         if verbose:
