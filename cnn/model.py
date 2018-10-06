@@ -28,8 +28,8 @@ class Model(nn.Module):
             elif isinstance(m, nn.Linear):
                 nn.init.xavier_normal_(m.weight, gain=nn.init.calculate_gain('relu'))
             elif isinstance(m, nn.LSTM):
-                nn.init.xavier_normal_(m.weight_ih_l, gain=nn.init.calculate_gain('relu'))
-                nn.init.xavier_normal_(m.weight_hh_l, gain=nn.init.calculate_gain('relu'))
+                nn.init.xavier_normal_(m.weight_ih_l0, gain=nn.init.calculate_gain('relu'))
+                nn.init.xavier_normal_(m.weight_hh_l0, gain=nn.init.calculate_gain('relu'))
             
 
     def param_count(self):
