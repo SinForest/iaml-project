@@ -22,6 +22,14 @@ class Model(nn.Module):
         if verbose:
             print(f"Created model for input {n_mels}x{n_samp} and {n_lbls} classes.\n"
                   f"parameter count: {self.param_count():,}")
+        for m in self.modules():
+            if isinstance(m, nn.Conv1d):
+                nn.init.xavier_normal_(m.weight, gain=nn.init.calculate_gain('relu'))
+            elif isinstance(m, nn.Linear):
+                nn.init.xavier_normal_(m.weight, gain=nn.init.calculate_gain('relu'))
+            elif isinstance(m, nn.LSTM):
+                nn.init.xavier_normal_(m.weight, gain=nn.init.calculate_gain('relu'))
+            
 
     def param_count(self):
         return sum([sum([y.numel() for y in x.parameters()]) for x in self.modules() if type(x) not in {nn.Sequential, Model}])
