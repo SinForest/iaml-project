@@ -36,7 +36,7 @@ tloader = DataLoader(tset, batch_size=BATCH_SIZE, shuffle=True, num_workers=N_PR
 vloader = DataLoader(vset, batch_size=BATCH_SIZE, shuffle=False, num_workers=N_PROC, drop_last=True)
 
 print("### building model ###")
-model = Model(*dset[0][0].shape, dset.n_classes, verbose=True)
+model = ModelIm(*dset[0][0].shape, dset.n_classes, verbose=True)
 if CUDA_DEVICE > -1:
     model.cuda()
 crit  = torch.nn.CrossEntropyLoss()
