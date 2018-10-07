@@ -73,7 +73,7 @@ class SoundfileDataset(Dataset):
         n_fft = 2**11         # shortest human-disting. sound (music)
         hop_length = 2**10    # => 50% overlap of frames
 
-        return librosa.feature.melspectrogram(song, sr=sr, n_mels=self.n_mels, n_fft=n_fft, hop_length=hop_length)
+        return librosa.feature.melspectrogram(song, sr=sr, n_mels=128, n_fft=n_fft, hop_length=hop_length)
 
     def calc_entropy(self, song):
         fsize = 1024

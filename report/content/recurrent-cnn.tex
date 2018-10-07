@@ -34,27 +34,27 @@ This approaches main attempt was to analyse sound in a similar way to humans. Si
 
 
 \begin{figure}
-    \label{fig:rcnn-mels}
     \includegraphics[width=0.5\textwidth]{{images/pepe/stft}.png}
     \includegraphics[width=0.5\textwidth]{{images/pepe/mel}.png}
-\caption{Here, we see the difference between the Short-Time Fourier Transformation (\emph{left}) and the Mel spectrogram (\emph{right}). Primary, the difference in the dimensionality (through the binning) can be seen immediately, while the other advantages are not to be spotted by the naked eye. Both visualizations have in common that they plot the frequency domain on the y-axis and the time domain on the x-axis.}
+\caption{\label{fig:rcnn-mels}Here, we see the difference between the Short-Time Fourier Transformation (\emph{left}) and the Mel spectrogram (\emph{right}). Primary, the difference in the dimensionality (through the binning) can be seen immediately, while the other advantages are not to be spotted by the naked eye. Both visualizations have in common that they plot the frequency domain on the y-axis and the time domain on the x-axis.}
 \end{figure}
 
 
-A Mel spectrogram is basically the same thing, but converts frequencies to Mel scale \todo{cite}, which tries to map equal distances to tones, that humans perceive as equally distanced, and then sums them up them to a given number of bins.
+A Mel spectrogram is basically the same thing, but converts frequencies to Mel scale (a unit that tries to map equal distances to tones, that humans perceive as equally distanced), and then sums them up to a given number of bins.
 We use $128$ bins for our spectrogram, since the hearable spectrum ranges from ~16HZ to  ~19,000Hz, which are $~10.2$ octaves, which are $~123$ tones, so we should be catching everything that gathers around the "main frequencies in the traditional tone ladder" as a single feature.
+
+An optical comparison between the two is provided in figure \ref{fig:rcnn-mels}.
 
 \section{The Model}
 \label{sec:rcnn-model}
 
 \begin{figure}
-    \label{fig:rcnn-model}
     \includegraphics[width=1.0\textwidth]{{images/pepe/model}.png}
-\caption{This is the used model architecture. The model starts with it's convolutional layers (together with their usual companions), followed by an LSTM and a time-distributed fully connected layer, over whose scores is averaged unweighted.}
+\caption{\label{fig:rcnn-model}This is the used model architecture. The model starts with it's convolutional layers (together with their usual companions), followed by an LSTM and a time-distributed fully connected layer, over whose scores is averaged unweighted.}
 \end{figure}
 
 The first part of the network consists of convolutional layers. Since tones in all frequencies can be combined to create a hearing experience, it makes sense to consider the frequency domain as feature axis, so the \mbox{\texttt{Conv1D}} layers' filters are two-dimensional and shifted along a single axis, the time axis. This way, information about different frequency bins can be combined over a short amount of time in each laver. Around the convolutional layers, which utilize \code{ReLU} activations, there are \code{BatchNorm}, \code{Pooling} and \code{Dropout} layers.
-A visualization of the model can be seen in the figure.
+A visualization of the model can be seen in figure \ref{fig:fig:rcnn-model}.
 
 The next part is a \mbox{\texttt{LSTM}}\cite{Hochreiter:1997:LSM:1246443.1246450}, which is a special form of a recurrent layer. LSTM cells carry a state and have several weight matrices that, dependent on state and input, give out instructions on how to alter the state as well as an output.
 Therefore, LSTMs are used to analyze sequences, since the state allows them to combine information over very long signals and to treat features differently dependent on their predecessors. This is why we then feed the individual feature vectors for each discrete time step into the LSTM, and apply a fully connected layer to the output of each. This fully connected layer has the same weights for each time step.
@@ -69,12 +69,12 @@ Based on these measurements and the opinion that the gain in time is definitely 
 \label{sec:rcnn-first}
 
 \begin{figure}
-    \label{sec:rcnn-train}
     \includegraphics[width=0.5\textwidth]{{images/pepe/logs1.p}.png}
     \includegraphics[width=0.5\textwidth]{{images/pepe/logs2.p}.png}
+    \caption{\label{fig:rcnn-train} On the left, one can see the training progress of the first session. The validation accuracy is not stable at all and does not reach anywhere near acceptable results. The training has been canceled early.}
 \end{figure}
 
-The first training was continued over $4$ to $5$ epochs, but then canceled, since we found problems with the data, as mentioned in chapter %\ref{dataset}.
+The first training was continued over $4$ to $5$ epochs, but then canceled, since we found problems with the data, as mentioned in chapter \todo{uncomment}%\ref{dataset}.
 The data shown in figure \ref{fig:rcnn-train} is included to show the difference to further training sessions.
 With $~53.5$\% of the songs that seems to belong to all different kinds of genres being labeled with no label, the best achieved accuracy of $~55$\% is only slightly better than always guessing "no label", which the model does in XX\%\todo{fill in} of all cases.
 

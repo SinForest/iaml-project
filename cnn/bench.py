@@ -20,7 +20,7 @@ N_MELS      = 128
 N_RUNS      = 100
 
 print("### creating dataset ###")
-dset = SoundfileDataset("../all_metadata.p", IPATH, seg_size=30, out_type='mel', n_mels=N_MELS, random_slice=N_RUNS*BATCH_SIZE+1)#, cut_data=True)
+dset = SoundfileDataset("../all_metadata.p", IPATH, seg_size=30, out_type='mel', random_slice=N_RUNS*BATCH_SIZE+1)#, cut_data=True)
 print("### building model ###")
 model = Model(*dset[0][0].shape, dset.n_classes)
 if CUDA_DEVICE > -1:
