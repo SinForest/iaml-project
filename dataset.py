@@ -34,6 +34,7 @@ class SoundfileDataset(Dataset):
                                           and v["track"]["genre_top"] != ""}
         else:
             d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and int(v["track"]["duration"]) > seg_size}
+        
         if verbose:
             print(f"removed {tmp_len - len(d)}/{tmp_len} non-existing/too short items" )
         
@@ -233,6 +234,21 @@ class SoundfileDataset(Dataset):
             train_set = Subset(self, train_indices)
             valid_set = Subset(self, val_indices)
             return train_set, valid_set
+
+    def get_indices(self, shuffle=True):
+        validation_split = .2
+        random_seed= 4 # chosen by diceroll, 100% random  
+        
+        # Creating data indices for training and validation splits:
+        dataset_size = self.__len__()
+        indices = list(range(dataset_size))
+        split = int(np.floor(validation_split * dataset_size))
+        if shuffle:
+            np.random.seed(random_seed)
+            np.random.shuffle(indices)
+        train_indices, val_indices = indices[split:], indices[:split]
+
+        return train_indices, val_indices
 
     
     
