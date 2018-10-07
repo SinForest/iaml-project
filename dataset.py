@@ -29,7 +29,9 @@ class SoundfileDataset(Dataset):
         # Remove non-existent data points (e.g. b/c of smaller subset)
         tmp_len = len(d)
         if out_type == 'pre_mel':
-            d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'][:-3] + "npy")) and int(v["track"]["duration"]) > seg_size}
+            d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'][:-3] + "npy"))
+                                          and int(v["track"]["duration"]) > seg_size
+                                          and v["track"]["genre_top"] != ""}
         else:
             d = {k:v for k,v in d.items() if os.path.isfile(os.path.join(ipath, v['path'])) and int(v["track"]["duration"]) > seg_size}
         if verbose:
@@ -71,7 +73,7 @@ class SoundfileDataset(Dataset):
         n_fft = 2**11         # shortest human-disting. sound (music)
         hop_length = 2**10    # => 50% overlap of frames
 
-        return librosa.feature.melspectrogram(song, sr=sr, n_mels=self.n_mels, n_fft=n_fft, hop_length=hop_length)
+        return librosa.feature.melspectrogram(song, sr=sr, n_mels=128, n_fft=n_fft, hop_length=hop_length)
 
     def calc_entropy(self, song):
         fsize = 1024
