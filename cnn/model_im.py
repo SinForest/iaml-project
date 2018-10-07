@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import numpy as np
 from scipy.misc import imshow
-import matplotlib.pyplot as plt
 
 class Model(nn.Module):
     def __init__(self, n_mels, n_samp, n_lbls, verbose=False):
@@ -111,6 +110,7 @@ def main():
     inp = torch.ones(64, 128, 646)
     print(model(inp).size())
     ims = model.gen_images(inp)
+    import matplotlib.pyplot as plt
     for i in range(ims.size(0)):
         for ii in range(ims.size(1)):
             print(ims[i,ii].permute(1,2,0))
