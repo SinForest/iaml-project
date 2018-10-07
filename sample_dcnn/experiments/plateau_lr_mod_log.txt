@@ -1,0 +1,65 @@
+=> begin training <=
+training epoch 0: 100%|███████████████████████| 400/400 [30:32<00:00,  1.01s/it]
+train precision: 24.11%
+validation epoch 0: 100%|█████████████████████| 100/100 [07:51<00:00,  4.96s/it]
+validation precision: 28.31%
+validation running loss: 189.4387%
+training epoch 1: 100%|███████████████████████| 400/400 [31:21<00:00,  2.47s/it]
+train precision: 29.94%
+validation epoch 1: 100%|█████████████████████| 100/100 [07:59<00:00,  4.79s/it]
+validation precision: 24.06%
+validation running loss: 194.8429%
+Epoch     1: reducing learning rate of group 0 to 5.0000e-03.
+training epoch 2: 100%|███████████████████████| 400/400 [31:41<00:00,  1.26it/s]
+train precision: 32.98%
+validation epoch 2: 100%|█████████████████████| 100/100 [07:46<00:00,  4.67s/it]
+validation precision: 35.19%
+validation running loss: 183.0475%
+training epoch 3: 100%|███████████████████████| 400/400 [31:29<00:00,  1.43s/it]
+train precision: 34.50%
+validation epoch 3: 100%|█████████████████████| 100/100 [07:42<00:00,  4.63s/it]
+validation precision: 36.06%
+validation running loss: 182.8531%
+training epoch 4: 100%|███████████████████████| 400/400 [32:11<00:00,  2.07s/it]
+train precision: 36.36%
+validation epoch 4: 100%|█████████████████████| 100/100 [07:39<00:00,  4.60s/it]
+validation precision: 36.12%
+validation running loss: 182.8061%
+training epoch 5: 100%|███████████████████████| 400/400 [31:25<00:00,  1.77s/it]
+train precision: 37.14%
+validation epoch 5: 100%|█████████████████████| 100/100 [07:49<00:00,  4.69s/it]
+validation precision: 36.88%
+validation running loss: 181.1469%
+training epoch 6: 100%|███████████████████████| 400/400 [31:48<00:00,  1.16s/it]
+train precision: 38.80%
+validation epoch 6: 100%|█████████████████████| 100/100 [07:44<00:00,  4.64s/it]
+validation precision: 34.44%
+validation running loss: 183.0335%
+Epoch     6: reducing learning rate of group 0 to 2.5000e-03.
+training epoch 7: 100%|███████████████████████| 400/400 [31:25<00:00,  1.12it/s]
+train precision: 41.98%
+validation epoch 7: 100%|█████████████████████| 100/100 [07:59<00:00,  4.80s/it]
+validation precision: 39.38%
+validation running loss: 178.9149%
+training epoch 8: 100%|███████████████████████| 400/400 [31:21<00:00,  1.68it/s]
+train precision: 45.09%
+validation epoch 8: 100%|█████████████████████| 100/100 [07:44<00:00,  4.64s/it]
+validation precision: 36.62%
+validation running loss: 181.6917%
+Epoch     8: reducing learning rate of group 0 to 1.2500e-03.
+training epoch 9: 100%|███████████████████████| 400/400 [31:07<00:00,  1.58it/s]
+train precision: 47.34%
+validation epoch 9: 100%|█████████████████████| 100/100 [07:50<00:00,  3.58s/it]
+validation precision: 39.00%
+validation running loss: 179.9984%
+training epoch 10: 100%|██████████████████████| 400/400 [31:25<00:00,  5.35s/it]
+train precision: 50.00%
+validation epoch 10: 100%|████████████████████| 100/100 [07:55<00:00,  2.67s/it]
+validation precision: 39.69%
+validation running loss: 179.5468%
+Epoch    10: reducing learning rate of group 0 to 6.2500e-04.
+training epoch 11: 100%|██████████████████████| 400/400 [31:18<00:00,  1.67it/s]
+train precision: 52.66%
+validation epoch 11: 100%|████████████████████| 100/100 [07:34<00:00,  3.11s/it]
+validation precision: 39.44%
+validation running loss: 179.3168%

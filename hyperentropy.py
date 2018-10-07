@@ -11,13 +11,15 @@ from dataset import SoundfileDataset
 from entrset import EntropyDataset
 import operator
 import sys, os
+from tqdm import tqdm
 
+#training with optimized hyperparameters
 num_epochs  = 2000
 batch_s     = 2**12
 seg_s       = 2
-learn_r     = 0.01
+learn_r     = 0.00483380227625002
 s_factor    = 0.5
-log_percent = 0.25
+log_percent = 0.5
 CUDA_ON     = True
 SHUFFLE_ON  = True
 
@@ -34,17 +36,22 @@ trainloader = torch.utils.data.DataLoader(trainsamp, batch_size=batch_s, shuffle
 valloader   = torch.utils.data.DataLoader(valsamp, batch_size=batch_s, shuffle=False, num_workers=4)
 log_interval = np.ceil((len(trainloader.dataset) * log_percent) / batch_s)
 
-n_con = 1024
+print(dataset.n_classes)
+
+l1 = 2029
+l2 = 650
+p = 0.4637661092959765
+pre = 1
 model = nn.Sequential(
-    nn.Linear(6, n_con),
-    nn.PReLU(num_parameters=n_con),
-    nn.BatchNorm1d(n_con),
-    nn.Dropout(p=0.5),
-    nn.Linear(n_con, n_con),
-    nn.PReLU(num_parameters=n_con),
-    nn.BatchNorm1d(n_con),
-    nn.Dropout(p=0.5),
-    nn.Linear(n_con, dataset.n_classes)
+    nn.Linear(6, l1),
+    nn.PReLU(num_parameters=l1),
+    nn.BatchNorm1d(l1),
+    #nn.Dropout(p=p),
+    nn.Linear(l1, l2),
+    nn.PReLU(num_parameters=l2),
+    nn.BatchNorm1d(l2),
+    #nn.Dropout(p=p),
+    nn.Linear(l2, dataset.n_classes)
 )
 
 for m in model.modules():
@@ -57,7 +64,8 @@ for m in model.modules():
         m.weight.data.normal_(0, 0.01)
         m.bias.data.zero_()
 
-optimizer = optim.Adam(model.parameters(), lr=learn_r)
+#optimizer = optim.Adam(model.parameters(), lr=learn_r)
+optimizer = optim.SGD(model.parameters(), lr=learn_r)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=s_factor, patience=5, verbose=True)
 criterion = nn.CrossEntropyLoss()
 
@@ -88,7 +96,7 @@ def train(epoch):
         total_size += data.size(0)
 
         accur = (torch.argmax(output, dim=1) == target).sum()
-        accuracy += accur 
+        accuracy += accur
 
         loss.backward()
         optimizer.step()

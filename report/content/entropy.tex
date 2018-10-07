@@ -1,0 +1,41 @@
+\chapter{Entropy Approach}
+\textit{by Florian Fallenbüchel}\\
+This chapter will explain our approach on the classification of the
+genre via the entropy and fractal dimension of the song. This approach
+is interesting, because it does not consider musical information such as
+harmony, melody, beat and tempo, heavily reducing the size of the data
+to be processed during training. We follow the work of Goulart
+\textit{et al.}~\cite{entropy} from 2012, who used the entropy approach
+together with combined support vector machines. They got 100\%
+classification accuracy on a set of 90 songs equally distributed over 3
+different genres, with 80-90\% of the data used for training. We try
+to extend this method to a larger amount of classes, combining it with
+neural networks for classification.\\
+For the calculation of the entropy, we need the energy approach of
+signal theory, as presented in Elements of Information
+Theory~\cite{infotheo} by Cover and Thomas. The song is divided into
+frames of 1024 samples with 50\% overlap between consecutive frames.
+The entropy (E) then is defined as
+\begin{equation}
+	E = - \sum_{i=0}^{1023} p_{i} \log_{2}(p_{i}),
+\end{equation}
+with $p_{i}$ being the proportion of the
+
+
+\begin{center}
+\begin{tabular}{ p{\textwidth /4}  p{\textwidth *3 /5 }}
+
+	Description & The way developers approach a task can provide detailed information about the structure of the project they are working on.
+	Using this knowledge, other team-members can familiarize themselves with new parts of the project faster.
+	This information can be displayed as trace links, which show the source code entities, that are relevant to a particular requirement specification.
+	While the users can benefit from these trace links, their creation should not interfere with the normal workflow. Why is this even still on my hard-drive, I handed it in years ago.\\
+	\hline
+	User Subtasks & User Subtask 1.1: perform interactions\\
+	& User Subtask 1.2: commit changes related to an issue\\
+	& User Subtask 1.3: browse linked code entities\\	
+\end{tabular}
+	\label{tab:somerandomtablethatshouldnotbehere}
+\captionof{table}{If you don't add a caption, the table wont show up in the list of tables. I invested a lot of clicks into making that, so you better think of something clever to put there.}
+\end{center}
+
+Notice how this tabular doesn't float all over the place? use regular tables if you prefer it that way.

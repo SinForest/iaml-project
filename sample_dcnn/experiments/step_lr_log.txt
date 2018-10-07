@@ -1,0 +1,61 @@
+=> begin training <=
+learning rate for next epoch: 0.0100000000
+training epoch 0: 100%|███████████████████████| 400/400 [29:24<00:00,  1.04s/it]
+train precision: 24.70%
+validation epoch 0: 100%|█████████████████████| 100/100 [07:47<00:00,  4.67s/it]
+validation precision: 29.69%
+learning rate for next epoch: 0.0100000000
+training epoch 1: 100%|███████████████████████| 400/400 [30:54<00:00,  1.22s/it]
+train precision: 30.20%
+validation epoch 1: 100%|█████████████████████| 100/100 [07:18<00:00,  4.39s/it]
+validation precision: 32.94%
+learning rate for next epoch: 0.0100000000
+training epoch 2: 100%|███████████████████████| 400/400 [29:41<00:00,  1.66it/s]
+train precision: 32.55%
+validation epoch 2: 100%|█████████████████████| 100/100 [07:35<00:00,  4.56s/it]
+validation precision: 34.56%
+learning rate for next epoch: 0.0020000000
+training epoch 3: 100%|███████████████████████| 400/400 [31:33<00:00,  1.33it/s]
+train precision: 36.69%
+validation epoch 3: 100%|█████████████████████| 100/100 [07:41<00:00,  4.61s/it]
+validation precision: 37.50%
+learning rate for next epoch: 0.0020000000
+training epoch 4: 100%|███████████████████████| 400/400 [29:51<00:00,  1.06s/it]
+train precision: 38.50%
+validation epoch 4: 100%|█████████████████████| 100/100 [07:37<00:00,  4.28s/it]
+validation precision: 37.44%
+learning rate for next epoch: 0.0020000000
+training epoch 5: 100%|███████████████████████| 400/400 [30:01<00:00,  1.22it/s]
+train precision: 39.11%
+validation epoch 5: 100%|█████████████████████| 100/100 [07:38<00:00,  4.59s/it]
+validation precision: 38.12%
+learning rate for next epoch: 0.0004000000
+training epoch 6: 100%|███████████████████████| 400/400 [31:07<00:00,  1.17s/it]
+train precision: 40.31%
+validation epoch 6: 100%|█████████████████████| 100/100 [07:37<00:00,  4.58s/it]
+validation precision: 38.94%
+learning rate for next epoch: 0.0004000000
+training epoch 7: 100%|███████████████████████| 400/400 [30:33<00:00,  1.61s/it]
+train precision: 42.69%
+validation epoch 7: 100%|█████████████████████| 100/100 [07:36<00:00,  4.57s/it]
+validation precision: 40.12%
+learning rate for next epoch: 0.0004000000
+training epoch 8: 100%|███████████████████████| 400/400 [30:38<00:00,  1.30s/it]
+train precision: 42.78%
+validation epoch 8: 100%|█████████████████████| 100/100 [07:51<00:00,  3.93s/it]
+validation precision: 38.12%
+learning rate for next epoch: 0.0000800000
+training epoch 9: 100%|███████████████████████| 400/400 [31:12<00:00,  1.82s/it]
+train precision: 43.59%
+validation epoch 9: 100%|█████████████████████| 100/100 [07:44<00:00,  2.23s/it]
+validation precision: 39.12%
+learning rate for next epoch: 0.0000800000
+training epoch 10: 100%|██████████████████████| 400/400 [31:11<00:00,  2.05s/it]
+train precision: 43.72%
+validation epoch 10: 100%|████████████████████| 100/100 [07:36<00:00,  4.56s/it]
+validation precision: 39.94%
+learning rate for next epoch: 0.0000800000
+training epoch 11: 100%|██████████████████████| 400/400 [31:40<00:00,  1.16it/s]
+train precision: 44.28%
+validation epoch 11: 100%|████████████████████| 100/100 [07:52<00:00,  4.73s/it]
+validation precision: 38.69%

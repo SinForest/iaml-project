@@ -129,7 +129,7 @@ class SoundfileDataset(Dataset):
 
         N = np.log(numbox)
         R = np.log(1/np.array(blocksize))
-        m = np.linalg.lstsq(R[:,None],N, rcond=None) #
+        m = np.linalg.lstsq(R[:,None],N, rcond=None) #slope of curve is fractal dimension
 
         avg = np.average(entropy)
         std = np.std(entropy)
@@ -143,14 +143,11 @@ class SoundfileDataset(Dataset):
 
     def shrink_song(self, song, sr):
         # each run takes 2678 ms of the song
-        segments = 10
-        # magic numbers falling out of the paper, may need changing
-        filter_length = 3
-        depth = 9
+        segments = 1
+
                 
-        sample_num = (filter_length ** (depth+1))
+        sample_num = 59049
         
-        # not elegant, but it prevents crashes and doesn't happen often enough to influence accuracy
         if(song.size < segments * sample_num):
             missing = segments * sample_num -song.size
             filler = 2 * np.random.rand(missing).astype('f') -1
