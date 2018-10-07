@@ -65,7 +65,7 @@ DeepSound argue that e.g. a rock song should sound like a rock song at every par
 
 \section{Initial Pre-Processing}
 \label{sec:rcnn-pre-proc}
-Since the dataset is huge and the song's durations vary strongly, random crops of the song were used, which have been turned into mel spectrograms by the \emph{pytorch} \mbox{\texttt{Dataloader}} on demand. During this approach, training epochs have needed too much time to train many of them, which is why benchmarks of the proportion of data preprocessing time to training time have been made.\todo{plot or table}
+Since the dataset is huge and the song's durations vary strongly, random crops of the song were used, which have been turned into mel spectrograms by the \emph{pytorch} \mbox{\texttt{Dataloader}} on demand. During this approach, training epochs have needed too much time to train many of them, which is why benchmarks of the proportion of data preprocessing time to training time have been made.
 Based on these measurements and the opinion that the gain in time is definitely worth the additional needed space, all data is then pre-processed by a script before training, which creates mel spectrograms for all full songs and saves them on hard disk. During training, files are loaded from disk and cropped randomly with a fixed size along the time axis. 
 
 \section{First Training}
@@ -78,9 +78,9 @@ Based on these measurements and the opinion that the gain in time is definitely 
     On the right, the second session is plotted. The validation accuracy seems a lot more stable than before, which might be thanks to the filtered dataset. The yellow stars denote a reduction of the learning rate to one third.}
 \end{figure}
 
-The first training was continued over $4$ to $5$ epochs, but then canceled, since we found problems with the data, as mentioned in chapter \todo{uncomment}%\ref{dataset}.
+The first training was continued over $4$ to $5$ epochs, but then canceled, since we found problems with the data, as mentioned in chapter \ref{dataset}. Like in all following training sessions, \code{RMSprop} with its default configuration has been used as optimizer.
 The data shown in figure \ref{fig:rcnn-train} is included to show the difference to further training sessions.
-With $~53.5$\% of the songs that seems to belong to all different kinds of genres being labeled with no label, the best achieved accuracy of $~55$\% is only slightly better than always guessing "no label", which the model does in XX\%\todo{fill in} of all cases.
+With $~53.5$\% of the songs that seems to belong to all different kinds of genres being labeled with no label, the best achieved accuracy of $~55$\% is only slightly better than always guessing "no label".
 
 \section{Second Training}
 \label{sec:rcnn-second}
