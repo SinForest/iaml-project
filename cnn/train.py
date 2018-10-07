@@ -39,6 +39,7 @@ print("### building model ###")
 model = ModelIm(*dset[0][0].shape, dset.n_classes, verbose=True)
 if CUDA_DEVICE > -1:
     model.cuda()
+    model.gaussian = model.gaussian.cuda()
 crit  = torch.nn.CrossEntropyLoss()
 opti  = torch.optim.RMSprop(model.parameters())
 sched = torch.optim.lr_scheduler.ReduceLROnPlateau(opti, patience=3, factor=0.33, verbose=True, mode='max')

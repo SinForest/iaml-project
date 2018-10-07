@@ -83,9 +83,9 @@ class Model(nn.Module):
     def init_gaussian(self, n):
         x, y = np.mgrid[-n:n+1, -n:n+1]
         g = np.exp(-(x**2/float(n)+y**2/float(n)))
-        g =  torch.tensor(g / g.sum())
+        g =  torch.tensor(g / g.sum(), requires_grad=False)
 
-        self.gaussian = torch.zeros(3,3,2*n+1,2*n+1);
+        self.gaussian = torch.zeros(3,3,2*n+1,2*n+1, requires_grad=False);
         print(g.size(), self.gaussian.size())
         self.gaussian[0,0] = g
         self.gaussian[1,1] = g
