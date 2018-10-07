@@ -37,7 +37,7 @@ class EntropyDataset(Dataset):
         return self.ent.shape[0]
 
     def getsplit(self, val_size=0.2, shuffle=True):
-        seed = 666 #such evil
+        seed = 4 #such evil
         datasize = self.__len__()
         indices = list(range(datasize))
         split = int(np.floor(val_size * datasize))
@@ -51,7 +51,7 @@ class EntropyDataset(Dataset):
         return train_set, valid_set
 
     def getindices(self, val_size=0.2, shuffle=True):
-        seed = 666 #such evil
+        seed = 4 #such evil
         datasize = self.__len__()
         indices = list(range(datasize))
         split = int(np.floor(val_size * datasize))

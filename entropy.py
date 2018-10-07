@@ -12,7 +12,7 @@ from entrset import EntropyDataset
 import operator
 import sys, os
 
-num_epochs  = 500
+num_epochs  = 2000
 batch_s     = 2**12
 seg_s       = 2
 learn_r     = 0.01
@@ -128,6 +128,7 @@ loss_list = []
 acc_list  = []
 val_loss  = []
 val_acc   = []
+n_epo = 0
 for epoch in range(0, num_epochs):
     loss, acc = train(epoch)
     loss_list.append(loss)
@@ -136,6 +137,8 @@ for epoch in range(0, num_epochs):
     scheduler.step(val_l)
     val_loss.append(val_l)
     val_acc.append(val_a)
-    state = {'state_dict':model.state_dict(), 'optim':optimizer.state_dict(), 'epoch':epoch, 'train_loss':loss_list, 'accuracy':acc_list, 'val_loss':val_loss, 'val_acc':val_acc}
-    filename = "../models/entropy_{:02d}.nn".format(epoch)
-    torch.save(state, filename)
+    n_epo += 1
+
+state = {'state_dict':model.state_dict(), 'optim':optimizer.state_dict(), 'epoch':n_epo, 'train_loss':loss_list, 'accuracy':acc_list, 'val_loss':val_loss, 'val_acc':val_acc}
+filename = "../models/entropy_{:02d}.nn".format(n_epo)
+torch.save(state, filename)

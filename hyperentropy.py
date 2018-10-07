@@ -14,10 +14,10 @@ import sys, os
 from tqdm import tqdm
 
 #training with optimized hyperparameters
-num_epochs  = 500
+num_epochs  = 2000
 batch_s     = 2**12
 seg_s       = 2
-learn_r     = 0.004980867332163915
+learn_r     = 0.00483380227625002
 s_factor    = 0.5
 log_percent = 0.5
 CUDA_ON     = True
@@ -38,19 +38,19 @@ log_interval = np.ceil((len(trainloader.dataset) * log_percent) / batch_s)
 
 print(dataset.n_classes)
 
-l1 = 2203
-l2 = 1569
+l1 = 2029
+l2 = 650
 p = 0.4637661092959765
 pre = 1
 model = nn.Sequential(
     nn.Linear(6, l1),
-    nn.ELU(),
+    nn.PReLU(num_parameters=l1),
     nn.BatchNorm1d(l1),
-    nn.Dropout(p=p),
+    #nn.Dropout(p=p),
     nn.Linear(l1, l2),
-    nn.ELU(),
+    nn.PReLU(num_parameters=l2),
     nn.BatchNorm1d(l2),
-    nn.Dropout(p=p),
+    #nn.Dropout(p=p),
     nn.Linear(l2, dataset.n_classes)
 )
 
@@ -136,6 +136,7 @@ loss_list = []
 acc_list  = []
 val_loss  = []
 val_acc   = []
+n_epo = 0
 for epoch in range(0, num_epochs):
     loss, acc = train(epoch)
     loss_list.append(loss)
@@ -144,6 +145,8 @@ for epoch in range(0, num_epochs):
     scheduler.step(val_l)
     val_loss.append(val_l)
     val_acc.append(val_a)
-    state = {'state_dict':model.state_dict(), 'optim':optimizer.state_dict(), 'epoch':epoch, 'train_loss':loss_list, 'accuracy':acc_list, 'val_loss':val_loss, 'val_acc':val_acc}
-    filename = "../models/entropy_{:02d}.nn".format(epoch)
-    torch.save(state, filename)
+    n_epo += 1
+
+state = {'state_dict':model.state_dict(), 'optim':optimizer.state_dict(), 'epoch':n_epo, 'train_loss':loss_list, 'accuracy':acc_list, 'val_loss':val_loss, 'val_acc':val_acc}
+filename = "../models/entropy_{:02d}.nn".format(n_epo)
+torch.save(state, filename)

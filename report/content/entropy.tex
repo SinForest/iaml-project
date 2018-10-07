@@ -1,31 +1,25 @@
-\chapter{Tex-Demo}
-
-This chapter has a bunch of random \LaTeX\  examples. If you are reading this in the final version, hi. This is a bit awkward.
-
-
-
-Here you see me cite stuff \cite{fma_dataset}. Add new stuff to cite from to 'literature.bib' and ignore the stuff already in there, thats just for copy-pasting (and I will delete it later, probably).
-
-Here is an image. Delete the [!htb] if you don't need the image anywhere close by, and \LaTeX\  will store it somewhere on the dark side of the moon.
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=.9\linewidth]{images/Approach-Flowchart.png}
-	\caption{Some random image I had lying around in another \LaTeX\  report.}
-	\label{fig:random_image}
-\end{figure}
-
-Here is me talking about figure \ref{fig:random_image}.
-
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=.4\linewidth]{images/Approach-Flowchart.png}
-	\quad\includegraphics[width=.4\linewidth]{images/Approach-Flowchart.png}
-	\caption{This is getting out of hand! Now there is two of them!}
-	\label{fig:lolnooneevenusesthisimage}
-\end{figure}
-
-
-Look at table \ref{tab:somerandomtablethatshouldnotbehere}, it's all shiny and without lines boxing it in on all sides. Or you can just draw a sudoku, see if I care.
+\chapter{Entropy Approach}
+\textit{by Florian Fallenbüchel}\\
+This chapter will explain our approach on the classification of the
+genre via the entropy and fractal dimension of the song. This approach
+is interesting, because it does not consider musical information such as
+harmony, melody, beat and tempo, heavily reducing the size of the data
+to be processed during training. We follow the work of Goulart
+\textit{et al.}~\cite{entropy} from 2012, who used the entropy approach
+together with combined support vector machines. They got 100\%
+classification accuracy on a set of 90 songs equally distributed over 3
+different genres, with 80-90\% of the data used for training. We try
+to extend this method to a larger amount of classes, combining it with
+neural networks for classification.\\
+For the calculation of the entropy, we need the energy approach of
+signal theory, as presented in Elements of Information
+Theory~\cite{infotheo} by Cover and Thomas. The song is divided into
+frames of 1024 samples with 50\% overlap between consecutive frames.
+The entropy (E) then is defined as
+\begin{equation}
+	E = - \sum_{i=0}^{1023} p_{i} \log_{2}(p_{i}),
+\end{equation}
+with $p_{i}$ being the proportion of the
 
 
 \begin{center}
