@@ -12,10 +12,10 @@ import torch.optim as optim
 from tqdm import tqdm
 
 # our homebrew code:
-#from sample_dcnn_model import Model
+from sample_dcnn_model import Model
 #from sample_dcnn_model_fewer_filters import Model
 #from sample_dcnn_model_fewer_filters_3_6 import Model
-from sample_dcnn_model_2_14 import Model
+#from sample_dcnn_model_2_14 import Model
 
 
 sys.path.append("../")
@@ -26,9 +26,7 @@ N_PROC = 8
 num_epochs  = 100
 CUDA_ON     = True
 SEGMENTS        = 1
-FILTER_LENGTH   = 2
-DEPTH           = 14
-SAMPLES         = (FILTER_LENGTH ** (DEPTH+1)) 
+SAMPLES         = 59049
 learn_r     = 0.01
 import sys
 

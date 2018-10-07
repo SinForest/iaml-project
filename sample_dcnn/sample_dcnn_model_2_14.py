@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Oct  1 16:35:45 2018
+Created on Sat Oct  6 16:11:08 2018
 
-@author: twuensche-uni-hd
+@author: twuensche
 """
+
 
 import torch.nn as nn
 
@@ -11,9 +13,9 @@ import torch.nn as nn
 class Model(nn.Module):
     def __init__(self,segments, samples, num_labels):
         super().__init__()
-        filter_length = 3
-        # depth = 9
-        padding = int(round((filter_length-1)/2))
+        filter_length = 2
+        # depth = 14
+        padding = 1
         modules = []
         
         modules.append(nn.Conv1d(segments,128,filter_length,stride=filter_length,padding=padding))
@@ -30,7 +32,37 @@ class Model(nn.Module):
         modules.append(nn.ReLU())
         modules.append(nn.MaxPool1d(filter_length))
         
+        modules.append(nn.Conv1d(128,128,filter_length,stride=1,padding=padding))
+        modules.append(nn.BatchNorm1d(128))
+        modules.append(nn.ReLU())
+        modules.append(nn.MaxPool1d(filter_length))
+        
+        modules.append(nn.Conv1d(128,128,filter_length,stride=1,padding=padding))
+        modules.append(nn.BatchNorm1d(128))
+        modules.append(nn.ReLU())
+        modules.append(nn.MaxPool1d(filter_length))
+        
+        modules.append(nn.Conv1d(128,128,filter_length,stride=1,padding=padding))
+        modules.append(nn.BatchNorm1d(128))
+        modules.append(nn.ReLU())
+        modules.append(nn.MaxPool1d(filter_length))
+        
+        modules.append(nn.Conv1d(128,128,filter_length,stride=1,padding=padding))
+        modules.append(nn.BatchNorm1d(128))
+        modules.append(nn.ReLU())
+        modules.append(nn.MaxPool1d(filter_length))
+        
         modules.append(nn.Conv1d(128,256,filter_length,stride=1,padding=padding))
+        modules.append(nn.BatchNorm1d(256))
+        modules.append(nn.ReLU())
+        modules.append(nn.MaxPool1d(filter_length))
+        
+        modules.append(nn.Conv1d(256,256,filter_length,stride=1,padding=padding))
+        modules.append(nn.BatchNorm1d(256))
+        modules.append(nn.ReLU())
+        modules.append(nn.MaxPool1d(filter_length))
+        
+        modules.append(nn.Conv1d(256,256,filter_length,stride=1,padding=padding))
         modules.append(nn.BatchNorm1d(256))
         modules.append(nn.ReLU())
         modules.append(nn.MaxPool1d(filter_length))

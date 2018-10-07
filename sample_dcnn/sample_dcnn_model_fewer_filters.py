@@ -69,8 +69,6 @@ class Model(nn.Module):
         modules.append(nn.Conv1d(512,512,1,stride=1))
         modules.append(nn.Dropout(0.5))
         
-        #modules.append(nn.Sigmoid())
-
         self.conv = nn.Sequential(*modules)
         
         self.fc = nn.Sequential(nn.Linear(512, num_labels), nn.Sigmoid())

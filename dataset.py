@@ -142,11 +142,9 @@ class SoundfileDataset(Dataset):
     def shrink_song(self, song, sr):
         # each run takes 2678 ms of the song
         segments = 1
-        # magic numbers falling out of the paper, may need changing
-        filter_length = 2
-        depth = 14
+
                 
-        sample_num = (filter_length ** (depth+1))
+        sample_num = 59049
         
         if(song.size < segments * sample_num):
             missing = segments * sample_num -song.size
