@@ -10,6 +10,7 @@ import pickle
 sys.path.append("../")
 from dataset import SoundfileDataset
 from model import Model
+from model_im import Model as ModelIm
 
 # ANSI Esc:
 _CR = "\033[31m"
