@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.7
 import numpy as np
 import torch
 import pickle
@@ -24,10 +24,6 @@ SHUFFLE_ON  = True
 DATA_PATH   = "./all_metadata.p"
 MODEL_PATH  = "../models/"
 
-""" dataset = SoundfileDataset(path=DATA_PATH, seg_size=seg_s, hotvec=False, cut_data=True, verbose=False, out_type='entr')
-trainsamp, valsamp = dataset.get_split(sampler=False)
-trainloader = torch.utils.data.DataLoader(trainsamp, batch_size=batch_s, shuffle=SHUFFLE_ON, num_workers=6)
-valloader   = torch.utils.data.DataLoader(valsamp, batch_size=batch_s, shuffle=SHUFFLE_ON, num_workers=6) """
 dataset = EntropyDataset()
 trainsamp, valsamp = dataset.getsplit()
 trainloader = torch.utils.data.DataLoader(trainsamp, batch_size=batch_s, shuffle=SHUFFLE_ON, num_workers=4)
@@ -61,10 +57,7 @@ optimizer = optim.Adam(model.parameters(), lr=learn_r)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=s_factor, patience=5, verbose=True)
 criterion = nn.CrossEntropyLoss()
 
-if CUDA_ON:
-    model.cuda()
-
-print(sum([sum([y.numel() for y in x.parameters()]) for x in model.modules() if type(x) not in {nn.Sequential}]))
+model.cuda()
 
 def train(epoch):
     total_loss = 0
@@ -124,24 +117,10 @@ def validate():
     
     return val_loss, accuracy
 
-loss_list = []
-acc_list  = []
-val_loss  = []
-val_acc   = []
-n_epo = 0
 for epoch in range(0, num_epochs):
     loss, acc = train(epoch)
-    loss_list.append(loss)
-    acc_list.append(acc)
     val_l, val_a = validate()
     scheduler.step(val_l)
-    val_loss.append(val_l)
-    val_acc.append(val_a)
-    n_epo += 1
-
-state = {'state_dict':model.state_dict(), 'optim':optimizer.state_dict(), 'epoch':n_epo, 'train_loss':loss_list, 'accuracy':acc_list, 'val_loss':val_loss, 'val_acc':val_acc}
-filename = "../models/entropy_{:02d}.nn".format(n_epo)
-torch.save(state, filename)
 
 def acc_per_class():
     model.eval()
@@ -158,6 +137,12 @@ def acc_per_class():
             occ[lbl] += 1
             hit[lbl] += comp[i]
     
-    hit = (hit / occ) * 100
+    acc = (hit / occ) * 100
 
-    return hit, occ
+    return acc, hit, occ
+
+acc, hit, occ = acc_per_class()
+
+for i, elem in enumerate(acc):
+    print("{}: Accuracy {}%, {} from {}".format(i, elem, hit[i], occ[i]))
+print((hit.sum()/occ.sum())*100)
