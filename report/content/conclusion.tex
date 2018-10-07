@@ -1,1 +1,18 @@
 \chapter{Conclusion}
+by Patrick Dammann
+
+\bigskip
+
+In this project, several methods for music genre classification have been tested. While the first part focussed on handling the raw signal of the song with a specially designed neural network, the following two parts concentrated on good preprocessing and models that are designed to handle it.
+
+Since the dataset was heavily imbalanced, our results can't be directly compared, for accuracies up to $~68$\% can be achieved by ignoring $13$ of the $16$ genres completely. The imbalance of the dataset therefore also heavily influenced our training, since a high bias on frequent labels should be the easiest and most promising direction for the network to follow to obtain low losses. In the end that also means that our results are not very meaningful.
+
+\section{Future Attempts}
+First and foremost, future research need a more structured dataset. Since we wanted to perform better than previous attempts on this problem, one of our initial intents was to use more data, which seemed to be simple with the enormous dataset we found. Being way to enthusiastic about the dataset we forgot to check whether there could be errors in it, since it seemed to be well preprocessed by its offerers. With the empty label removed from the beginning, we could have saved much time on unnecessary work and trainings.
+
+The imbalance of the dataset turned out to be a way bigger problem than we initially thought. While we first thought about the bias in the set as a wanted bias, since a big archive like the FMA might resemble the real-world-distribution of music, we soon learned that out models mainly concentrated on learning a bias than on learning general classification qualities.
+
+With a new dataset, other improvements could be realized. For example, the combination of individual models. Especially the pre-processed data of the entropy attempt can easily be fed into another network, maybe helping it by erasing the need to generate similar features itself or by boosting classification by adding a dimension where the data can be more easily separated.
+
+Also, we often copied and sometimes guessed hyper-parameters. These could have been optimized via gaussian processes, or more advanced algorithms like the one provided by \emph{pytorch} used for the entropy approach.
+Unfortunately, these optimizations cost a great amount of time for networks with a higher forward- and backward-pass time and of course a higher number of hyper-parameters.
