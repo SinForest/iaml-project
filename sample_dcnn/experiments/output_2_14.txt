@@ -1,0 +1,260 @@
+=> loading dataset <=
+removed 98574/106574 non-existing/too short items
+=> dataset loaded <=
+Model(
+  (conv): Sequential(
+    (0): Conv1d(1, 128, kernel_size=(2,), stride=(2,), padding=(1,))
+    (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Conv1d(128, 128, kernel_size=(2,), stride=(1,), padding=(1,))
+    (4): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): ReLU()
+    (6): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Conv1d(128, 128, kernel_size=(2,), stride=(1,), padding=(1,))
+    (8): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (9): ReLU()
+    (10): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (11): Conv1d(128, 128, kernel_size=(2,), stride=(1,), padding=(1,))
+    (12): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (13): ReLU()
+    (14): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (15): Conv1d(128, 128, kernel_size=(2,), stride=(1,), padding=(1,))
+    (16): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (17): ReLU()
+    (18): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (19): Conv1d(128, 128, kernel_size=(2,), stride=(1,), padding=(1,))
+    (20): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (21): ReLU()
+    (22): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (23): Conv1d(128, 128, kernel_size=(2,), stride=(1,), padding=(1,))
+    (24): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (25): ReLU()
+    (26): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (27): Conv1d(128, 256, kernel_size=(2,), stride=(1,), padding=(1,))
+    (28): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (29): ReLU()
+    (30): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (31): Conv1d(256, 256, kernel_size=(2,), stride=(1,), padding=(1,))
+    (32): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (33): ReLU()
+    (34): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (35): Conv1d(256, 256, kernel_size=(2,), stride=(1,), padding=(1,))
+    (36): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (37): ReLU()
+    (38): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (39): Conv1d(256, 256, kernel_size=(2,), stride=(1,), padding=(1,))
+    (40): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (41): ReLU()
+    (42): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (43): Conv1d(256, 256, kernel_size=(2,), stride=(1,), padding=(1,))
+    (44): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (45): ReLU()
+    (46): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (47): Conv1d(256, 256, kernel_size=(2,), stride=(1,), padding=(1,))
+    (48): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (49): ReLU()
+    (50): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (51): Conv1d(256, 256, kernel_size=(2,), stride=(1,), padding=(1,))
+    (52): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (53): ReLU()
+    (54): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (55): Conv1d(256, 256, kernel_size=(2,), stride=(1,), padding=(1,))
+    (56): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (57): ReLU()
+    (58): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (59): Conv1d(256, 512, kernel_size=(2,), stride=(1,), padding=(1,))
+    (60): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (61): ReLU()
+    (62): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (63): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+    (64): Dropout(p=0.5)
+  )
+  (fc): Sequential(
+    (0): Linear(in_features=512, out_features=8, bias=True)
+    (1): Sigmoid()
+  )
+)
+=> begin training <=
+training epoch 0
+train precision: 24.44%
+validation precision: 30.25%
+training epoch 1
+train precision: 28.89%
+validation precision: 32.06%
+training epoch 2
+train precision: 29.81%
+validation precision: 33.00%
+training epoch 3
+train precision: 30.52%
+validation precision: 33.81%
+training epoch 4
+train precision: 31.13%
+validation precision: 33.62%
+training epoch 5
+train precision: 32.84%
+validation precision: 34.88%
+training epoch 6
+train precision: 32.39%
+validation precision: 34.88%
+training epoch 7
+train precision: 33.56%
+validation precision: 35.00%
+training epoch 8
+train precision: 33.98%
+validation precision: 36.31%
+training epoch 9
+train precision: 34.00%
+validation precision: 32.88%
+training epoch 10
+train precision: 32.66%
+validation precision: 36.06%
+training epoch 11
+train precision: 34.75%
+validation precision: 37.00%
+training epoch 12
+train precision: 34.84%
+validation precision: 34.00%
+training epoch 13
+train precision: 34.72%
+validation precision: 35.69%
+training epoch 14
+train precision: 36.30%
+validation precision: 37.31%
+training epoch 15
+train precision: 36.72%
+validation precision: 36.88%
+training epoch 16
+train precision: 36.08%
+validation precision: 36.06%
+training epoch 17
+train precision: 35.94%
+validation precision: 35.56%
+training epoch 18
+train precision: 37.05%
+validation precision: 38.38%
+Epoch    18: reducing learning rate of group 0 to 2.0000e-03.
+training epoch 19
+train precision: 39.41%
+validation precision: 38.25%
+training epoch 20
+train precision: 38.98%
+validation precision: 41.44%
+training epoch 21
+train precision: 40.48%
+validation precision: 40.56%
+training epoch 22
+train precision: 39.34%
+validation precision: 39.44%
+training epoch 23
+train precision: 39.34%
+validation precision: 40.75%
+training epoch 24
+train precision: 40.61%
+validation precision: 40.56%
+training epoch 25
+train precision: 40.84%
+validation precision: 43.19%
+training epoch 26
+train precision: 41.61%
+validation precision: 42.44%
+training epoch 27
+train precision: 40.56%
+validation precision: 42.38%
+training epoch 28
+train precision: 41.73%
+validation precision: 43.94%
+training epoch 29
+train precision: 40.75%
+validation precision: 44.06%
+training epoch 30
+train precision: 41.69%
+validation precision: 40.06%
+training epoch 31
+train precision: 41.27%
+validation precision: 41.75%
+training epoch 32
+train precision: 42.09%
+validation precision: 43.06%
+training epoch 33
+train precision: 41.73%
+validation precision: 41.81%
+training epoch 34
+train precision: 42.30%
+validation precision: 41.69%
+training epoch 35
+train precision: 41.56%
+validation precision: 42.94%
+Epoch    35: reducing learning rate of group 0 to 4.0000e-04.
+training epoch 36
+train precision: 42.09%
+validation precision: 44.56%
+training epoch 37
+train precision: 42.83%
+validation precision: 43.25%
+training epoch 38
+train precision: 43.30%
+validation precision: 44.75%
+training epoch 39
+train precision: 43.72%
+validation precision: 43.31%
+training epoch 40
+train precision: 43.31%
+validation precision: 42.00%
+training epoch 41
+train precision: 44.27%
+validation precision: 44.62%
+training epoch 42
+train precision: 42.95%
+validation precision: 44.50%
+Epoch    42: reducing learning rate of group 0 to 8.0000e-05.
+training epoch 43
+train precision: 42.98%
+validation precision: 45.38%
+training epoch 44
+train precision: 43.34%
+validation precision: 44.56%
+training epoch 45
+train precision: 43.22%
+validation precision: 43.69%
+training epoch 46
+train precision: 43.94%
+validation precision: 44.56%
+training epoch 47
+train precision: 43.25%
+validation precision: 44.25%
+Epoch    47: reducing learning rate of group 0 to 1.6000e-05.
+training epoch 48
+train precision: 42.95%
+validation precision: 44.44%
+training epoch 49
+train precision: 42.95%
+validation precision: 45.00%
+training epoch 50
+train precision: 43.48%
+validation precision: 45.88%
+training epoch 51
+train precision: 44.72%
+validation precision: 46.06%
+training epoch 52
+train precision: 43.00%
+validation precision: 43.88%
+training epoch 53
+train precision: 43.17%
+validation precision: 42.75%
+training epoch 54
+train precision: 43.56%
+validation precision: 45.19%
+training epoch 55
+train precision: 44.16%
+validation precision: 43.69%
+Epoch    55: reducing learning rate of group 0 to 3.2000e-06.
+training epoch 56
+train precision: 43.61%
+validation precision: 45.12%
+training epoch 57
+train precision: 43.14%
+validation precision: 43.62%
+training epoch 58
+train precision: 43.66%
+validation precision: 44.00%
+training epoch 59
