@@ -1,5 +1,6 @@
 \chapter{Dataset}\label{dataset}
 \textit{by Florian Fallenbüchel}\\
+
 The dataset which we will use in our experiments consists of 106574
 songs, downloaded from the Free Music Archive~\cite{fma_dataset}. This
 gives us 917 GB of Creative Commons-licensed audiofiles, tagged with the
@@ -18,21 +19,12 @@ imbalanced. This influenced most of the experiments we did with the set,
 delivering 53$\%$ accuracy for some of our neural networks, which only
 predicted the empty genre. The individual chapters will provide more
 insight.
-
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=1.0\textwidth]{images/genredist.png}
+	\includegraphics[width=0.9\textwidth]{images/genredist.png}
 	\caption{Distribution of the genres over the dataset.
 	About 53$\%$ of the data (left bar) has no top genre tagged.}
 	\label{unfiltered}
-\end{figure}
-
-\begin{figure}[]
-	\centering
-	\includegraphics[width=1.0\textwidth]{images/genredistfiltered.png}
-	\caption{Distribution of the genres over the filtered dataset with no empty
-	top genre.}	
-	\label{filtered}
 \end{figure}
 
 Therefore, we had to filter the songs from the set which were untagged,
@@ -47,6 +39,13 @@ majority of the songs being either Rock, Experimental or Electronic
 music. To improve results in the future, we should filter out genres
 with small sample sizes. Due to the deadline, we were only able to redo
 some of our tests we already carried out on the full dataset.\\
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/genredistfiltered.png}
+	\caption{Distribution of the genres over the filtered dataset with no empty
+	top genre.}	
+	\label{filtered}
+\end{figure}
 We used 20\% of our data for testing, resulting in 39679 songs for
 training and 9919 for validation (85260 and 21314 in the unfiltered data
 set). As the dataset has an ordering of genres, due to tracks of the

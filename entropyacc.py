@@ -30,7 +30,7 @@ trainloader = torch.utils.data.DataLoader(trainsamp, batch_size=batch_s, shuffle
 valloader   = torch.utils.data.DataLoader(valsamp, batch_size=batch_s, shuffle=False, num_workers=4)
 log_interval = np.ceil((len(trainloader.dataset) * log_percent) / batch_s)
 
-n_con = 1024
+""" n_con = 1024
 model = nn.Sequential(
     nn.Linear(6, n_con),
     nn.PReLU(num_parameters=n_con),
@@ -41,7 +41,24 @@ model = nn.Sequential(
     nn.BatchNorm1d(n_con),
     nn.Dropout(p=0.5),
     nn.Linear(n_con, dataset.n_classes)
+) """
+
+l1 = 1617
+l2 = 3036
+p = 0.4907947467956333
+pre = 1
+model = nn.Sequential(
+    nn.Linear(6, l1),
+    nn.Tanh(),
+    nn.BatchNorm1d(l1),
+    #nn.Dropout(p=p),
+    nn.Linear(l1, l2),
+    nn.Tanh(),
+    nn.BatchNorm1d(l2),
+    #nn.Dropout(p=p),
+    nn.Linear(l2, dataset.n_classes)
 )
+
 
 for m in model.modules():
     if isinstance(m, nn.BatchNorm1d):
